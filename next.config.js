@@ -9,7 +9,8 @@ const regionalProductRewrites = (region) => [
   { source: `/${region}/products/portrait-booth`, destination: '/portrait-booth' },
   { source: `/${region}/products/photography-videography`, destination: '/corporate-photography' },
   { source: `/${region}/products/headshots`, destination: '/headshots' },
-  { source: `/${region}/products/robot-photobooth`, destination: `/${region}/robot-photobooth` },
+  { source: `/${region}/products/ai-booth`, destination: '/ai-booth' },
+  { source: `/${region}/products/robot-photobooth`, destination: '/robot-photobooth' },
 ]
 
 /** Event landings: /chicago/events/product-launch → /events/product-launch */

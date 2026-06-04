@@ -89,7 +89,7 @@ export default function MarketContact({ market }: Props) {
 
   const productOptions = useMemo(
     () =>
-      market.id === 'chicago'
+      market.id === 'chicago' || market.id === 'texas'
         ? CONTACT_PRODUCT_OPTIONS.filter((o) => o.value !== 'Aerial Booth')
         : CONTACT_PRODUCT_OPTIONS,
     [market.id],

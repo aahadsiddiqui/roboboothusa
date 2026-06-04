@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowRight, FiChevronDown, FiMenu, FiPhone, FiX } from 'react-icons/fi'
-import { products } from '../data/products'
+import type { ProductData } from '../data/products'
+import { productsForMarket } from '../lib/marketProducts'
 import { eventTypes } from '../data/events'
 import { getMarketForPath } from '../data/markets'
 import { eventTypeHref, featuredBrandActivationsHref, featuredCorporateHref, featuredWeddingHref } from '../lib/eventRoutes'
@@ -24,11 +25,9 @@ export default function Navbar() {
     { name: 'Wedding', href: featuredWeddingHref(market), emoji: '👫' },
   ]
 
-  const productHref = (p: (typeof products)[number]) => regionalProductHref(market, p)
+  const productHref = (p: ProductData) => regionalProductHref(market, p)
 
-  /** Chicago does not offer Aerial Booth on regional nav/home; national/Texas keep full lineup. */
-  const navProducts =
-    market.id === 'chicago' ? products.filter((p) => p.slug !== 'aerial-booth') : products
+  const navProducts = productsForMarket(market)
 
   const [productsOpen, setProductsOpen] = useState(false)
   const [eventsOpen, setEventsOpen] = useState(false)

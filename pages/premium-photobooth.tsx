@@ -9,6 +9,7 @@ import { landingCanonical } from '../lib/landingSeo'
 import { getLandingTrustedLine, getRobotBoothPageCopy } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
 import { withMarketTravelFaq } from '../lib/travelAreaFaq'
+import { TEXAS_SERVICE_AREA, texasInPhrase, texasServingLine } from '../lib/texasServiceArea'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -36,6 +37,13 @@ export default function PremiumPhotoboothPage() {
   const { canonical, ogUrl } = landingCanonical(market, '/premium-photobooth', 'premium-photobooth')
   const trustedLine = getLandingTrustedLine(market)
   const rb = getRobotBoothPageCopy(market)
+  const offersAerial = market.id === 'national'
+  const platinumAddonLine = offersAerial
+    ? 'Add-on: Robot Photobooth, 360 Booth, or Aerial Booth'
+    : 'Add-on: Robot Photobooth or 360 Booth'
+  const platinumDesc = offersAerial
+    ? 'The ultimate event setup — add a Robot Photobooth, 360 Booth, or Aerial Booth to your activation.'
+    : 'The ultimate event setup — add a Robot Photobooth or 360 Booth to your activation.'
 
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
@@ -93,7 +101,7 @@ export default function PremiumPhotoboothPage() {
             market.id === 'chicago'
               ? "Chicago's sleek, portable Premium Photobooth with studio-grade lighting and instant sharing. Serving Chicago & surrounding areas."
               : market.id === 'texas'
-                ? "Texas's sleek, portable Premium Photobooth with studio-grade lighting and instant sharing. Serving Texas & surrounding areas."
+                ? `Texas's sleek, portable Premium Photobooth with studio-grade lighting and instant sharing. ${texasServingLine}.`
                 : "Chicago's sleek, portable Premium Photobooth with studio-grade lighting and instant sharing. DSLR-quality photos, GIFs, and videos for weddings, corporate events, and private parties across the USA."
           }
         />
@@ -332,11 +340,11 @@ export default function PremiumPhotoboothPage() {
                         </span>
                       </div>
                       <h3 className="text-lg md:text-xl font-black text-center mb-2">Premium Photobooth + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The ultimate event setup — add a Robot Photobooth, 360 Booth, or Aerial Booth to your activation.</p>
+                      <p className="text-white/60 text-xs text-center mb-6">{platinumDesc}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Everything included in the Gold Package',
-                          'Add-on: Robot Photobooth, 360 Booth, or Aerial Booth',
+                          platinumAddonLine,
                           'Two interactive booth activations running simultaneously',
                           'Maximum guest engagement from multiple experiences',
                           'One team coordinating everything seamlessly',

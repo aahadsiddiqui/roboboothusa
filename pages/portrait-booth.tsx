@@ -8,6 +8,7 @@ import { useLandingMarket } from '../hooks/useLandingMarket'
 import { landingCanonical } from '../lib/landingSeo'
 import { getLandingTrustedLine } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
+import { texasInPhrase } from '../lib/texasServiceArea'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -85,7 +86,7 @@ export default function PortraitBoothPage() {
             market.id === 'chicago'
               ? 'Magazine-quality portraits, captured and edited instantly. Professional on-site photography for weddings, brand activations, and premium events in Chicago & surrounding areas.'
               : market.id === 'texas'
-                ? 'Magazine-quality portraits, captured and edited instantly. Professional on-site photography for weddings, brand activations, and premium events in Texas & surrounding areas.'
+                ? `Magazine-quality portraits, captured and edited instantly. Professional on-site photography for weddings, brand activations, and premium events ${texasInPhrase}.`
                 : 'Magazine-quality portraits, captured and edited instantly. Professional on-site photography with instant retouching for weddings, brand activations, and premium events across Chicago & USA.'
           }
         />

@@ -328,11 +328,11 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                         </span>
                       </div>
                       <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The ultimate corporate event experience — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.</p>
+                      <p className="text-white/60 text-xs text-center mb-6">{L('The ultimate corporate event experience — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.')}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Everything included in the Gold Package',
-                          'Add-on: 360 Booth, Premium Photobooth, or Aerial Booth',
+                          L('Add-on: 360 Booth, Premium Photobooth, or Aerial Booth'),
                           'Two interactive booth activations running simultaneously',
                           'Maximum guest engagement from multiple experiences',
                           'One team coordinating everything seamlessly',
@@ -427,8 +427,8 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                       <div className="w-12 h-12 rounded-xl bg-[#fce4a6]/10 border border-[#fce4a6]/30 flex items-center justify-center mb-4 text-[#fce4a6] group-hover:bg-[#fce4a6]/20 transition-colors">
                         {item.icon}
                       </div>
-                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{item.title}</h3>
-                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{item.desc}</p>
+                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{L(item.title)}</h3>
+                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{L(item.desc)}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -527,13 +527,13 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                       className="w-full text-left bg-white/[0.04] border border-white/10 rounded-xl p-3.5 md:p-4 hover:border-[#fce4a6]/30 transition-colors">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{faq.question}</h3>
+                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{L(faq.question)}</h3>
                         {expandedFaq === i ? <FiChevronUp className="text-[#fce4a6] w-4 h-4 flex-shrink-0" /> : <FiChevronDown className="text-[#fce4a6] w-4 h-4 flex-shrink-0" />}
                       </div>
                       <AnimatePresence>
                         {expandedFaq === i && (
                           <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-white/60 text-xs md:text-sm mt-2 leading-relaxed">
-                            {faq.answer}
+                            {L(faq.answer)}
                           </motion.p>
                         )}
                       </AnimatePresence>

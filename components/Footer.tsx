@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { getMarketForPath } from '../data/markets'
+import { TEXAS_SERVICE_AREA } from '../lib/texasServiceArea'
 
 export default function Footer() {
   const router = useRouter()
@@ -19,7 +20,9 @@ export default function Footer() {
   const regionTagline =
     market.id === 'national'
       ? 'Proudly serving the USA.'
-      : `Proudly serving ${market.analyticsRegion} and surrounding areas.`
+      : market.id === 'texas'
+        ? `Proudly serving ${TEXAS_SERVICE_AREA}.`
+        : `Proudly serving ${market.analyticsRegion} and surrounding areas.`
 
   return (
     <div className="bg-black w-full">

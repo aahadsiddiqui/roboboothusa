@@ -1,4 +1,14 @@
 import type { MarketConfig } from '../data/markets'
+import {
+  TEXAS_SERVICE_AREA,
+  texasAcrossPhrase,
+  texasInPhrase,
+  texasServingLine,
+  texasTrustedBrandsCouplesLine,
+  texasTrustedBrandsLine,
+  texasTrustedCompaniesLine,
+  texasTrustedCouplesLine,
+} from './texasServiceArea'
 
 /** Badges and hero lines on product pages for a regional market. */
 export function localizeProductBadges(badges: string[], market: MarketConfig): string[] {
@@ -6,26 +16,26 @@ export function localizeProductBadges(badges: string[], market: MarketConfig): s
   return badges.map((b) => {
     if (b === 'Free delivery in USA' || b.includes('Free delivery in USA')) {
       if (market.id === 'chicago') return 'Free delivery in Chicago & surrounding areas'
-      if (market.id === 'texas') return 'Free delivery in Texas & surrounding areas'
+      if (market.id === 'texas') return `Free delivery in ${TEXAS_SERVICE_AREA}`
     }
     if (b === 'Rapid turnaround' && market.id === 'chicago') return 'Rapid turnaround for Chicago & surrounding area events'
-    if (b === 'Rapid turnaround' && market.id === 'texas') return 'Rapid turnaround for Texas & surrounding area events'
+    if (b === 'Rapid turnaround' && market.id === 'texas') return `Rapid turnaround for events in ${TEXAS_SERVICE_AREA}`
     if (b === 'We come to you' && market.id === 'chicago') return 'We come to you in Chicago & surrounding areas'
-    if (b === 'We come to you' && market.id === 'texas') return 'We come to you in Texas & surrounding areas'
+    if (b === 'We come to you' && market.id === 'texas') return `We come to you ${texasInPhrase}`
     return b
   })
 }
 
 export function productServingLine(market: MarketConfig): string | undefined {
   if (market.id === 'chicago') return 'Serving Chicago & surrounding areas'
-  if (market.id === 'texas') return 'Serving Texas & surrounding areas'
+  if (market.id === 'texas') return texasServingLine
   return undefined
 }
 
 /** “Trusted by…” marquee on custom product landing pages (360, premium, etc.) */
 export function getLandingTrustedLine(market: MarketConfig): string {
   if (market.id === 'chicago') return 'Trusted by leading companies across Chicago & surrounding areas'
-  if (market.id === 'texas') return 'Trusted by leading companies across Texas & surrounding areas'
+  if (market.id === 'texas') return texasTrustedCompaniesLine
   return 'Trusted by leading companies across USA'
 }
 
@@ -57,14 +67,14 @@ export function getRobotBoothPageCopy(market: MarketConfig): RobotPageCopy {
   if (market.id === 'texas') {
     return {
       ratingSubtext: "5.0 Rating · Texas's First Robot Photobooth",
-      trustedCompanies: 'Trusted by leading companies across Texas & surrounding areas',
+      trustedCompanies: texasTrustedCompaniesLine,
       packageRobotFeature: "Texas's First Robot Photobooth roaming guest-to-guest",
-      platinumEventSetup: 'The most talked-about event setup in Texas & surrounding areas',
+      platinumEventSetup: `The most talked-about event setup ${texasInPhrase}`,
       finalCtaTitle: "Texas's First Robot Photobooth.",
       metaTitle: "Robot Photobooth | Texas's First Robot Photobooth | Robo Booth",
       metaDescription:
-        "Texas's first robot photobooth that roams your event, engages guests, and captures studio-quality photos anywhere. Serving Texas & surrounding areas. Reserve your date now.",
-      ogDescription: "The robot photobooth that comes to your guests. Texas & surrounding areas.",
+        `Texas's first robot photobooth that roams your event, engages guests, and captures studio-quality photos anywhere. ${texasServingLine}. Reserve your date now.`,
+      ogDescription: `The robot photobooth that comes to your guests. ${TEXAS_SERVICE_AREA}.`,
     }
   }
   return {
@@ -90,7 +100,7 @@ export function getProductSeoName(market: MarketConfig, name: string): { title: 
   if (market.id === 'texas') {
     return {
       title: `${name} | Robo Booth Texas`,
-      desc: (summary: string) => `${summary} Serving Texas & surrounding areas.`,
+      desc: (summary: string) => `${summary} ${texasServingLine}.`,
     }
   }
   return {

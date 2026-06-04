@@ -60,6 +60,34 @@ export const products: ProductData[] = [
     ],
   },
   {
+    slug: 'ai-booth',
+    name: 'AI Booth',
+    linkOverride: '/ai-booth',
+    tagline: 'Turn every guest into a cinematic icon with AI-transformed photos.',
+    summary:
+      'Our AI Booth uses your photo — taken with our Premium Photobooth or Robot Photobooth — and transforms it into a stunning cinematic, editorial, or animated masterpiece.',
+    productImage: '/images/aibooth1.png',
+    videoUrl: '/videos/vid3.mp4',
+    priceLabel: 'Custom Quote',
+    priceNote: 'Delivered instantly to every guest\'s phone',
+    badges: ['Free delivery in USA', 'On-site attendant included'],
+    usp: [
+      { title: 'Cinematic AI Styles', description: 'Classic Hollywood, animated, editorial, and fully custom themes.' },
+      { title: 'Instant Phone Delivery', description: 'Transformed photos on guests\' phones within seconds.' },
+      { title: 'White-Glove Service', description: 'Our team handles setup, AI processing, delivery, and teardown.' },
+    ],
+    faqData: [
+      { question: 'What exactly is the AI Booth?', answer: 'The AI Booth captures a high-quality photo and instantly transforms it into a styled AI image — cinematic, animated, editorial, and more.' },
+      { question: 'How long does the transformation take?', answer: 'The full process — from photo to transformed image on the guest\'s phone — takes under a minute.' },
+      { question: 'Can we choose the AI style?', answer: 'Yes. We design a custom AI style that matches your event theme before the event.' },
+    ],
+    testimonials: [
+      { name: 'Priya M.', role: 'Corporate Event Manager', text: 'Our guests completely lost it when they saw their AI photos. The Classic Hollywood transformation was jaw-dropping.' },
+      { name: 'Jason & Kelly', role: 'Wedding Reception', text: 'We had the animated style for our wedding and every single person left with the biggest smile.' },
+      { name: 'Derek T.', role: 'Brand Activation Director', text: 'The social media reach we got from guests sharing their AI photos was unreal.' },
+    ],
+  },
+  {
     slug: 'aerial-booth',
     name: 'Aerial Booth',
     linkOverride: '/aerial',

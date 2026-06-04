@@ -1,14 +1,29 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiClock, FiX, FiVideo, FiZap, FiImage, FiUsers, FiStar, FiShield, FiSmile, FiShare2 } from 'react-icons/fi'
+import {
+  FiArrowRight,
+  FiCheck,
+  FiPhone,
+  FiChevronDown,
+  FiChevronUp,
+  FiClock,
+  FiX,
+  FiZap,
+  FiImage,
+  FiUsers,
+  FiStar,
+  FiShield,
+  FiShare2,
+  FiSend,
+  FiAward,
+  FiCamera,
+} from 'react-icons/fi'
 import Navbar from '../components/Navbar'
 import { useLandingMarket } from '../hooks/useLandingMarket'
 import { landingCanonical } from '../lib/landingSeo'
-import { getLandingTrustedLine, getRobotBoothPageCopy } from '../lib/productLocalize'
+import { getLandingTrustedLine } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
-import { withMarketTravelFaq } from '../lib/travelAreaFaq'
 import { TEXAS_SERVICE_AREA, texasServingLine } from '../lib/texasServiceArea'
 
 /* ─── Reveal ─── */
@@ -29,21 +44,17 @@ const SubtleCTA = ({ label, onQuote }: { label: string; onQuote: () => void }) =
 )
 
 /* ════════════════════════════════════════════════════════════════
-   360 BOOTH — Custom Landing Page (matching Robot/Aerial/Premium layout)
+   AI BOOTH — Custom Landing Page
    ════════════════════════════════════════════════════════════════ */
-export default function ThreeSixtyBoothPage() {
+export default function AiBoothPage() {
   const market = useLandingMarket()
-  const faqsForMarket = useMemo(() => withMarketTravelFaq(faqs, market), [market])
-  const { canonical, ogUrl } = landingCanonical(market, '/360-booth', '360-booth')
+  const { canonical, ogUrl } = landingCanonical(market, '/ai-booth', 'ai-booth')
   const trustedLine = getLandingTrustedLine(market)
-  const rb = getRobotBoothPageCopy(market)
-  const offersAerial = market.id === 'national'
-  const platinumAddonLine = offersAerial
-    ? 'Add-on: Robot Photobooth, Premium Photobooth, or Aerial Booth'
-    : 'Add-on: Robot Photobooth or Premium Photobooth'
-  const platinumDesc = offersAerial
-    ? 'The ultimate event setup — add a Robot Photobooth, Premium Photobooth, or Aerial Booth to your activation.'
-    : 'The ultimate event setup — add a Robot Photobooth or Premium Photobooth to your activation.'
+  const showRegionalContact = market.id !== 'national'
+
+  const regionLabel = market.id === 'chicago' ? 'Chicago' : market.id === 'texas' ? 'Texas' : 'USA'
+  const regionArea = market.id === 'chicago' ? 'Chicago & surrounding areas' : market.id === 'texas' ? TEXAS_SERVICE_AREA : 'the USA'
+  const finalCtaArea = market.id === 'chicago' ? 'Chicago' : market.id === 'texas' ? 'Texas' : 'the USA'
 
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
@@ -76,10 +87,19 @@ export default function ThreeSixtyBoothPage() {
     try {
       const fd = new FormData()
       fd.append('first-name', form.firstName); fd.append('phone-number', form.phone); fd.append('email', form.email)
-      fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', '360 Booth')
-      fd.append('package', packageType === 'gold' ? 'Gold Package (360 Booth + Event Photography)' : packageType === 'platinum' ? 'Platinum Package (360 Booth + Event Photography + Second Booth)' : packageType === 'bronze' ? 'Bronze Package (360 Booth Only)' : 'General Inquiry')
+      fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', 'AI Booth')
+      fd.append(
+        'package',
+        packageType === 'gold'
+          ? 'Gold Package (AI Booth + Robot Photobooth)'
+          : packageType === 'platinum'
+            ? 'Platinum Package (AI Booth + Robot Photobooth + Event Photography)'
+            : packageType === 'bronze'
+              ? 'Bronze Package (AI Booth via Premium Photobooth)'
+              : 'General Inquiry',
+      )
       fd.append('_replyto', form.email)
-      fd.append('source', market.id === 'national' ? '360 Booth Page' : `360 Booth Page (${market.analyticsRegion})`)
+      fd.append('source', market.id === 'national' ? 'AI Booth Page' : `AI Booth Page (${market.analyticsRegion})`)
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
@@ -87,48 +107,50 @@ export default function ThreeSixtyBoothPage() {
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 
+  const contactHref = showRegionalContact ? market.phoneTel : market.contactPath
+  const contactLabel = showRegionalContact ? `Call ${market.phoneDisplay}` : 'Contact Us'
+
   return (
     <>
       <Head>
         <title>
           {market.id === 'national'
-            ? '360 Photo Booth Rental Chicago USA | Cinematic Slow-Mo Videos | Robo Booth'
-            : `360 Photo Booth | Robo Booth ${market.analyticsRegion}`}
+            ? 'AI Booth Rental Chicago USA | AI Photo Experience | Robo Booth'
+            : `AI Booth | Robo Booth ${market.analyticsRegion}`}
         </title>
         <meta
           name="description"
           content={
             market.id === 'chicago'
-              ? "Chicago's premier 360 Photo Booth rental. Cinematic slow-motion videos, instant sharing, and custom branding. Serving Chicago & surrounding areas."
+              ? "Chicago's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly. Serving Chicago & surrounding areas."
               : market.id === 'texas'
-                ? `Texas's premier 360 Photo Booth rental. Cinematic slow-motion videos, instant sharing, and custom branding. ${texasServingLine}.`
-                : "Chicago's premier 360 Photo Booth rental. Cinematic slow-motion videos, instant sharing, and custom branding for weddings, corporate events, and private parties across the USA."
+                ? `Texas's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly. ${texasServingLine}.`
+                : "Chicago's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly to every guest's phone. Weddings, corporate events, and brand activations across the USA."
           }
         />
-        <meta name="keywords" content="360 photo booth rental Chicago, 360 booth USA, slow motion photo booth, cinematic video booth, wedding 360 booth, corporate 360 booth, spin booth Chicago" />
+        <meta name="keywords" content="AI photo booth rental, AI booth Chicago, cinematic photo booth, AI transformed photos, wedding AI booth, corporate AI activation, robot photobooth AI" />
         <meta
           property="og:title"
-          content={market.id === 'national' ? '360 Photo Booth Rental Chicago USA | Robo Booth' : `360 Photo Booth | Robo Booth ${market.analyticsRegion}`}
+          content={market.id === 'national' ? 'AI Booth Rental Chicago USA | Robo Booth' : `AI Booth | Robo Booth ${market.analyticsRegion}`}
         />
         <meta
           property="og:description"
           content={
             market.id === 'national'
-              ? 'Cinematic slow-motion 360 videos with instant sharing and custom branding. Chicago & USA.'
-              : 'Cinematic slow-motion 360 videos with instant sharing and custom branding.'
+              ? 'Turn every guest into a cinematic icon with AI-transformed photos. Instant delivery. Chicago & USA.'
+              : 'Turn every guest into a cinematic icon with AI-transformed photos delivered instantly.'
           }
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={ogUrl} />
         <link rel="canonical" href={canonical} />
-        <link rel="preload" href="/images/360-booth-main.jpg" as="image" />
+        <link rel="preload" href="/images/aibooth1.png" as="image" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
       <div className={showModal ? 'blur-sm pointer-events-none select-none' : ''}>
         <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
-          {/* ── Navbar ── */}
           <Navbar />
 
           {/* ── Urgency Banner ── */}
@@ -136,14 +158,14 @@ export default function ThreeSixtyBoothPage() {
             <div className="fixed top-16 md:top-[4.5rem] left-0 right-0 z-40 bg-[#fce4a6] text-black text-center py-2 px-4">
               <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold">
                 <FiClock className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>Weekend dates filling fast — <button onClick={openQuote} className="underline font-bold">lock yours in now</button></span>
+                <span>Peak event dates are filling fast — <button onClick={openQuote} className="underline font-bold">check your date now</button></span>
                 <button onClick={() => setUrgencyDismissed(true)} className="ml-2 text-black/50 hover:text-black"><FiX className="w-3.5 h-3.5" /></button>
               </div>
             </div>
           )}
 
           {/* ═══════════════════════════════════════
-              HERO — Single large image
+              HERO — Two images side by side on desktop
              ═══════════════════════════════════════ */}
           <section className={`relative ${urgencyDismissed ? 'pt-20 md:pt-24' : 'pt-[7rem] md:pt-[8rem]'} pb-6 md:pb-8 px-4`}>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_#fce4a620_0%,_transparent_50%)] pointer-events-none" />
@@ -153,37 +175,49 @@ export default function ThreeSixtyBoothPage() {
                   <div className="flex items-center gap-2 mb-3">
                     <div className="flex text-yellow-400 text-sm">★★★★★</div>
                     <span className="text-white/60 text-xs font-medium">
-                      5.0 Rating · {market.id === 'chicago' ? "Chicago" : market.id === 'texas' ? "Texas" : "USA"}&apos;s #1 360 Booth
+                      5.0 Rating · {regionLabel}&apos;s Most Unique Photo Experience
                     </span>
                   </div>
                   <h1 className="text-[1.65rem] leading-[1.15] md:text-4xl lg:text-5xl font-black md:leading-[1.1] mb-4">
-                    The 360 Booth That Creates{' '}
-                    <span className="text-[#fce4a6]">Viral Content Instantly.</span>
+                    The AI Booth That Turns Every Guest Into a{' '}
+                    <span className="text-[#fce4a6]">Cinematic Icon.</span>
                   </h1>
                   <p className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed mb-5 max-w-xl">
-                    Guests step on, the camera spins, and they walk away with cinematic slow-motion videos ready to share.{' '}
-                    <span className="text-white font-semibold">Full white-glove service — we handle everything.</span>
+                    Our AI Booth uses your photo — taken with our Premium Photobooth or Robot Photobooth — and transforms it into a stunning cinematic, editorial, or animated masterpiece. Delivered instantly to every guest&apos;s phone.{' '}
+                    <span className="text-white font-semibold">The photo experience everyone will be talking about.</span>
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-3">
                     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
                       className="w-full sm:w-auto bg-[#fce4a6] text-black px-6 py-3.5 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group text-center">
                       Reserve Your Date <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
-                    <a href={market.phoneTel} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
-                      <FiPhone className="w-4 h-4" /> Contact Us
+                    <a href={contactHref} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
+                      <FiPhone className="w-4 h-4" /> {contactLabel}
                     </a>
                   </div>
-                  <p className="text-white/40 text-[11px] md:text-xs">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
+                  <p className="text-white/40 text-[11px] md:text-xs">
+                    Responses in &lt;15 mins&ensp;|&ensp;No credit card required
+                    {showRegionalContact && (
+                      <>
+                        {' '}|{' '}
+                        <a href={`mailto:${market.intakeEmail}`} className="underline hover:text-white/60">
+                          {market.intakeEmail}
+                        </a>
+                      </>
+                    )}
+                  </p>
                 </motion.div>
 
-                {/* Hero image */}
-                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:block">
-                  <img src="/images/360-booth-main.jpg" alt="360 Photo Booth" className="w-full h-[480px] lg:h-[520px] object-cover rounded-2xl shadow-2xl" loading="eager" fetchPriority="high" />
+                {/* Hero images — desktop side by side */}
+                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:grid grid-cols-2 gap-3">
+                  <img src="/images/aibooth1.png" alt="AI Booth cinematic style" className="w-full h-[480px] lg:h-[520px] object-cover rounded-2xl shadow-2xl" loading="eager" fetchPriority="high" />
+                  <img src="/images/aibooth2.png" alt="AI Booth animated style" className="w-full h-[480px] lg:h-[520px] object-cover rounded-2xl shadow-2xl" loading="eager" />
                 </motion.div>
 
                 {/* Mobile hero */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden -mx-4">
-                  <img src="/images/360-booth-main.jpg" alt="360 Photo Booth" className="w-full h-60 object-cover" loading="eager" fetchPriority="high" />
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden grid grid-cols-2 gap-2 -mx-1">
+                  <img src="/images/aibooth1.png" alt="AI Booth cinematic style" className="w-full h-44 object-cover rounded-xl" loading="eager" fetchPriority="high" />
+                  <img src="/images/aibooth2.png" alt="AI Booth animated style" className="w-full h-44 object-cover rounded-xl" loading="eager" />
                 </motion.div>
               </div>
             </div>
@@ -205,29 +239,12 @@ export default function ThreeSixtyBoothPage() {
             </div>
           </section>
 
-          {/* ── See It in Action + Video ── */}
-          <section className="py-8 md:py-10 px-4">
-            <div className="max-w-5xl mx-auto">
-              <Reveal className="text-center mb-5">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">See the 360 Booth <span className="text-[#fce4a6]">in Action</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Watch how guests create cinematic content at real events</p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <div className="rounded-2xl overflow-hidden border border-white/10 bg-black flex justify-center">
-                  <video className="w-full h-auto max-h-[70vh]" autoPlay loop muted playsInline controls={false} preload="auto" disablePictureInPicture style={{ display: 'block' }}>
-                    <source src="/videos/360vid1.mp4" type="video/mp4" />
-                  </video>
-                </div>
-              </Reveal>
-            </div>
-          </section>
-
           {/* ── How It Works — 3 Steps ── */}
           <section className="py-8 md:py-10 px-4">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">How It <span className="text-[#fce4a6]">Works</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Simple, stress-free, and handled entirely by us</p>
+                <p className="text-white/50 text-xs md:text-sm">Three steps to a photo your guests will never forget</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 {howItWorks.map((step, i) => (
@@ -246,7 +263,35 @@ export default function ThreeSixtyBoothPage() {
             </div>
           </section>
 
-          {/* ── Packages: Bronze + Gold ── */}
+          {/* ── Choose Your AI Style ── */}
+          <section className="py-8 md:py-10 px-4 border-t border-white/5">
+            <div className="max-w-6xl mx-auto">
+              <Reveal className="text-center mb-6">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Choose Your <span className="text-[#fce4a6]">AI Style</span></h2>
+                <p className="text-white/50 text-xs md:text-sm">Every style is fully customized to match your event theme</p>
+              </Reveal>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+                {aiStyles.map((style, i) => (
+                  <Reveal key={i} delay={i * 0.06}>
+                    <div className="bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden hover:border-[#fce4a6]/30 transition-colors group h-full flex flex-col">
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img src={style.image} alt={style.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      </div>
+                      <div className="p-4 md:p-5 flex-1">
+                        <h3 className="font-bold text-sm md:text-base text-white mb-1.5">{style.label}</h3>
+                        <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{style.desc}</p>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+              <Reveal delay={0.2} className="text-center mt-5">
+                <p className="text-white/40 text-xs md:text-sm">Fully custom styles available — themed exactly to your event. <button onClick={openQuote} className="text-[#fce4a6] underline font-semibold hover:text-white">Ask us.</button></p>
+              </Reveal>
+            </div>
+          </section>
+
+          {/* ── Packages ── */}
           <section className="py-10 md:py-14 px-4">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-8">
@@ -263,15 +308,15 @@ export default function ThreeSixtyBoothPage() {
                         Bronze Package
                       </span>
                     </div>
-                    <h3 className="text-lg md:text-xl font-black text-center mb-2">360 Booth <span className="text-white/50">Only</span></h3>
-                    <p className="text-white/50 text-xs text-center mb-6">The standalone 360 booth experience — fully set up, operated, and managed by our team.</p>
+                    <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth via <span className="text-white/50">Premium Photobooth</span></h3>
+                    <p className="text-white/50 text-xs text-center mb-6">Guests step into our Premium Photobooth — AI transforms every photo into a styled masterpiece, delivered instantly.</p>
                     <div className="space-y-2.5 mb-8 flex-1">
                       {[
-                        '360 Booth capturing stunning slow-motion videos',
-                        'Song selection playing in the background',
-                        'Custom overlay filters',
-                        'Dedicated on-site attendant handling everything',
-                        'Guests receive digital copies instantly to their phones',
+                        'Premium Photobooth capturing studio-quality photos',
+                        'AI transformation into your chosen style theme',
+                        'Instant delivery to every guest\'s phone',
+                        'Custom branded overlays on every image',
+                        'On-site attendant managing the full experience',
                       ].map((b, i) => (
                         <div key={i} className="flex items-start gap-3">
                           <FiCheck className="w-4 h-4 text-white/40 mt-0.5 flex-shrink-0" />
@@ -299,16 +344,16 @@ export default function ThreeSixtyBoothPage() {
                           ⭐ Most Popular · Gold
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">360 Booth + <span className="text-[#fce4a6]">Event Photography</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">Capture every moment of your event from two unforgettable perspectives.</p>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth + <span className="text-[#fce4a6]">Robot Photobooth</span></h3>
+                      <p className="text-white/60 text-xs text-center mb-6">Two activations, one unforgettable event — the roaming Robot captures the energy, while the AI Booth creates the keepsake.</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
-                          '360 Booth capturing stunning slow-motion videos',
-                          'Professional event photographer covering key moments',
-                          'Candid guest photography throughout the event',
-                          'Group photos and highlight moments captured',
-                          'Professionally edited high-resolution images delivered after the event',
-                          'Custom overlay and branded 360 Booth experience',
+                          'AI Booth via Premium Photobooth (styled masterpiece)',
+                          'Robot Photobooth roaming guest-to-guest',
+                          'AI transformation delivered to every guest instantly',
+                          'Custom style theme matching your event',
+                          'Branded overlays across both activations',
+                          'One team managing everything seamlessly',
                         ].map((b, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <FiCheck className="w-4 h-4 text-[#fce4a6] mt-0.5 flex-shrink-0" />
@@ -337,16 +382,16 @@ export default function ThreeSixtyBoothPage() {
                           💎 Platinum Package
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">360 Booth + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">{platinumDesc}</p>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth + Robot + <span className="text-white/80">Event Photography</span></h3>
+                      <p className="text-white/60 text-xs text-center mb-6">The complete event experience — AI-transformed keepsakes, a roaming robot, and full professional photography coverage.</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
-                          'Everything included in the Gold Package',
-                          platinumAddonLine,
-                          'Two interactive booth activations running simultaneously',
-                          'Maximum guest engagement from multiple experiences',
-                          'One team coordinating everything seamlessly',
-                          rb.platinumEventSetup,
+                          'Everything in Gold, plus:',
+                          'Professional event photographer covering key moments',
+                          'Candid guest photography throughout the event',
+                          'RAW + edited high-resolution images delivered within a week',
+                          `The most comprehensive event package in ${regionArea}`,
+                          'One seamless team handling every detail',
                         ].map((b, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <FiCheck className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
@@ -369,29 +414,14 @@ export default function ThreeSixtyBoothPage() {
             </div>
           </section>
 
-          {/* ── CTA 1 ── */}
           <SubtleCTA label="Reserve Your Date" onQuote={openQuote} />
-
-          {/* ── 360 Video 2 ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <Reveal>
-                <div className="rounded-2xl overflow-hidden border border-white/10 bg-black flex justify-center">
-                  <video className="w-full h-auto max-h-[75vh]" autoPlay loop muted playsInline controls={false} preload="auto" disablePictureInPicture style={{ display: 'block' }}>
-                    <source src="/videos/360vid2.MOV" type="video/quicktime" />
-                    <source src="/videos/360vid2.MOV" type="video/mp4" />
-                  </video>
-                </div>
-              </Reveal>
-            </div>
-          </section>
 
           {/* ── Why Guests Love It ── */}
           <section className="py-8 md:py-10 px-4 border-t border-white/5">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Why Guests <span className="text-[#fce4a6]">Love It</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Five reasons the 360 Booth is the ultimate crowd pleaser</p>
+                <p className="text-white/50 text-xs md:text-sm">The activation that makes every event truly one-of-a-kind</p>
               </Reveal>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                 {whyGuestsLove.map((item, i) => (
@@ -405,7 +435,6 @@ export default function ThreeSixtyBoothPage() {
             </div>
           </section>
 
-          {/* ── CTA 2 ── */}
           <SubtleCTA label="Check Availability" onQuote={openQuote} />
 
           {/* ── Customize Your Experience ── */}
@@ -413,7 +442,7 @@ export default function ThreeSixtyBoothPage() {
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Customize Your <span className="text-[#fce4a6]">Experience</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Every detail can be tailored to make the 360 Booth yours</p>
+                <p className="text-white/50 text-xs md:text-sm">Every detail tailored to your event, brand, or theme</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {customizations.map((item, i) => (
@@ -431,10 +460,9 @@ export default function ThreeSixtyBoothPage() {
             </div>
           </section>
 
-          {/* ── CTA 3 ── */}
           <SubtleCTA label="Book Now" onQuote={openQuote} />
 
-          {/* ── Testimonials (no faces) ── */}
+          {/* ── Testimonials ── */}
           <section className="py-8 md:py-10 px-4 border-t border-white/5">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-5">
@@ -462,11 +490,9 @@ export default function ThreeSixtyBoothPage() {
                   </Reveal>
                 ))}
               </div>
-
             </div>
           </section>
 
-          {/* ── CTA 4 ── */}
           <SubtleCTA label="Reserve Your Date" onQuote={openQuote} />
 
           {/* ── FAQs ── */}
@@ -476,7 +502,7 @@ export default function ThreeSixtyBoothPage() {
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Common <span className="text-[#fce4a6]">Questions</span></h2>
               </Reveal>
               <div className="space-y-2">
-                {faqsForMarket.map((faq, i) => (
+                {faqs.map((faq, i) => (
                   <Reveal key={i} delay={i * 0.04}>
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                       className="w-full text-left bg-white/[0.04] border border-white/10 rounded-xl p-3.5 md:p-4 hover:border-[#fce4a6]/30 transition-colors">
@@ -502,18 +528,18 @@ export default function ThreeSixtyBoothPage() {
           <section className="py-10 md:py-14 px-4 border-t border-white/5">
             <Reveal className="max-w-3xl mx-auto text-center">
               <h2 className="text-xl md:text-2xl lg:text-4xl font-black mb-2 md:mb-3">
-                Your Event Deserves the <span className="text-[#fce4a6]">360 Booth Experience.</span>
+                Give Your Guests a Photo Experience They&apos;ve <span className="text-[#fce4a6]">Never Seen Before.</span>
               </h2>
               <p className="text-white/60 text-xs md:text-sm lg:text-base mb-5 max-w-lg mx-auto">
-                Give your guests cinematic content they&apos;ll actually post — and an experience they won&apos;t stop talking about.
+                The AI Booth is unlike anything else in {finalCtaArea}. Dates are limited — reserve yours now before your date is gone.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
                   className="w-full sm:w-auto bg-[#fce4a6] text-black px-7 py-3.5 md:px-8 md:py-4 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group">
                   Reserve Your Date Now <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
-                <a href={market.phoneTel} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
-                  <FiPhone className="w-4 h-4" /> Contact Us
+                <a href={contactHref} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
+                  <FiPhone className="w-4 h-4" /> {contactLabel}
                 </a>
               </div>
               <p className="text-white/30 text-[10px] md:text-xs mt-2">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
@@ -534,22 +560,22 @@ export default function ThreeSixtyBoothPage() {
               {packageType === 'bronze' && (
                 <div className="bg-white/90 border border-black/10 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">🥉 Bronze Package Selected</span>
-                  <span className="text-black/60 text-[10px]">360 Booth Only</span>
+                  <span className="text-black/60 text-[10px]">AI Booth via Premium Photobooth</span>
                 </div>
               )}
               {packageType === 'gold' && (
                 <div className="bg-[#fce4a6] rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">⭐ Gold Package Selected</span>
-                  <span className="text-black/60 text-[10px]">360 Booth + Event Photography</span>
+                  <span className="text-black/60 text-[10px]">AI Booth + Robot Photobooth</span>
                 </div>
               )}
               {packageType === 'platinum' && (
                 <div className="bg-gradient-to-r from-white/95 to-gray-100 border border-gray-300 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">💎 Platinum Package Selected</span>
-                  <span className="text-black/60 text-[10px]">360 Booth + Photography + Second Booth</span>
+                  <span className="text-black/60 text-[10px]">AI Booth + Robot + Event Photography</span>
                 </div>
               )}
-              <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">{packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Reserve the 360 Booth'}</h2>
+              <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">{packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Reserve the AI Booth'}</h2>
               <p className="text-black/60 text-xs md:text-sm mb-4 text-center">Tell us your date and we&apos;ll confirm availability within 15 minutes.</p>
               {success ? (
                 <div className="text-green-600 text-center font-bold py-6">Thank you! We&apos;ll be in touch soon.</div>
@@ -589,8 +615,8 @@ export default function ThreeSixtyBoothPage() {
             <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t border-[#fce4a6]/30 px-3 py-3 safe-area-pb">
               <div className="flex gap-2">
-                <a href={market.phoneTel} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
-                  <FiPhone className="w-4 h-4" /> Call Now
+                <a href={contactHref} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
+                  <FiPhone className="w-4 h-4" /> {showRegionalContact ? 'Call' : 'Contact'}
                 </a>
                 <button onClick={openQuote} className="flex-[2] flex items-center justify-center gap-2 bg-[#fce4a6] text-black py-3 rounded-full font-bold text-sm shadow-lg shadow-[#fce4a6]/20">
                   Reserve Your Date <FiArrowRight className="w-4 h-4" />
@@ -610,40 +636,50 @@ export default function ThreeSixtyBoothPage() {
 }
 
 /* ─── DATA ─── */
+const aiStyles = [
+  { image: '/images/aibooth1.png', label: 'Classic Hollywood / Gala', desc: 'Cinematic red carpet glamour — perfect for galas, award nights, and upscale events.' },
+  { image: '/images/aibooth2.png', label: 'Animated / Cartoon', desc: 'Fun and vibrant — perfect for brand activations, holiday parties, and corporate events.' },
+  { image: '/images/aibooth3.png', label: 'Spy / Secret Agent', desc: 'Dark, cinematic noir — an instant hit at themed parties, galas, and casino nights.' },
+  { image: '/images/aibooth4.png', label: 'Sports Star', desc: 'Team-branded sports heroes — perfect for corporate team events, playoffs parties, and fan activations.' },
+  { image: '/images/aibooth5.png', label: 'Stage Performer', desc: 'Concert spotlight energy — ideal for music events, galas, and entertainment-themed activations.' },
+  { image: '/images/aibooth6.png', label: 'Space Explorer', desc: 'Out-of-this-world fun — great for tech events, product launches, and futuristic themed parties.' },
+]
+
 const howItWorks = [
-  { title: 'You Book', desc: 'Tell us your event date, venue, and vision. We confirm availability fast and handle all the planning.' },
-  { title: 'We Show Up', desc: 'Our team arrives early, sets up the 360 platform with props, lighting, and wind machine, and tests everything before guests arrive.' },
-  { title: 'Your Guests Go Viral', desc: 'Guests step on the platform, strike a pose, and walk away with cinematic slow-motion videos delivered instantly to their phones.' },
+  { title: 'Step Inside the Booth', desc: 'Guests enter our Premium Photobooth or get snapped by the roaming Robot Photobooth. A perfectly lit, high-quality photo is taken in seconds.' },
+  { title: 'AI Works Its Magic', desc: 'The photo is instantly processed and transformed into the chosen AI style — cinematic Hollywood, animated cartoon, editorial fashion, and more.' },
+  { title: 'Receive Your Masterpiece', desc: 'The AI-transformed image is delivered straight to the guest\'s phone in seconds. Ready to post, share, and keep forever.' },
 ]
 
 const whyGuestsLove = [
-  { icon: <FiVideo className="w-5 h-5 md:w-6 md:h-6" />, title: 'Cinematic Slow-Motion', desc: 'High-frame-rate capture creates stunning, Hollywood-quality slow-motion videos that look premium and go viral instantly.' },
-  { icon: <FiShare2 className="w-5 h-5 md:w-6 md:h-6" />, title: 'Instant Digital Sharing', desc: 'Videos delivered to guest phones instantly via QR, AirDrop, SMS, or email — ready to post on Instagram, TikTok, and more.' },
-  { icon: <FiSmile className="w-5 h-5 md:w-6 md:h-6" />, title: 'The Ultimate Crowd Magnet', desc: 'Guests can\'t resist stepping on. The 360 Booth draws a crowd and keeps the energy high all night long.' },
-  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Custom Branding & Overlays', desc: 'Your logo, event name, and brand colors on every video. Branded intros, outros, and overlays make every clip uniquely yours.' },
-  { icon: <FiUsers className="w-5 h-5 md:w-6 md:h-6" />, title: 'Dedicated On-Site Attendant', desc: 'A professional attendant manages the booth, guides guests, handles props, and ensures a flawless experience from start to finish.' },
+  { icon: <FiAward className="w-5 h-5 md:w-6 md:h-6" />, title: 'Truly One-of-a-Kind Photos', desc: 'No other activation creates photos like this. Every AI-transformed image is unique — a personalized masterpiece that guests genuinely want to keep.' },
+  { icon: <FiSend className="w-5 h-5 md:w-6 md:h-6" />, title: 'Instant Phone Delivery', desc: 'Photos are on guests\' phones within seconds of the transformation completing — no waiting, no apps, just instant wow.' },
+  { icon: <FiShare2 className="w-5 h-5 md:w-6 md:h-6" />, title: 'Social Media Gold', desc: 'Every AI-transformed photo is designed to stop the scroll. Guests share immediately — your event organically reaches hundreds of new eyes.' },
+  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Works With Any Theme', desc: 'Classic Hollywood, animated characters, editorial fashion — we match the AI style to your exact event theme so everything feels intentional.' },
+  { icon: <FiStar className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Branded', desc: 'Custom overlays, logos, event names, and hashtags on every transformation — every share becomes organic marketing for your event.' },
+  { icon: <FiUsers className="w-5 h-5 md:w-6 md:h-6" />, title: 'White-Glove Service', desc: 'Our team handles everything — booth setup, AI processing, delivery, and teardown. You enjoy the event while we make it unforgettable.' },
 ]
 
 const customizations = [
-  { icon: <FiStar className="w-5 h-5" />, title: 'Props & Accessories', desc: 'Choose from our premium prop collection or we\'ll source custom props that match your event theme — from elegant signs to fun accessories.' },
-  { icon: <FiImage className="w-5 h-5" />, title: 'Branded Video Overlays', desc: 'Custom video overlays with your logo, event hashtag, date, and brand colors. Every video becomes a branded piece of content your guests will share.' },
-  { icon: <FiShield className="w-5 h-5" />, title: 'Full White-Glove Service', desc: 'We handle every detail — delivery, setup, operation, and teardown. You don\'t lift a finger. Just enjoy the event and watch your guests have a blast.' },
+  { icon: <FiCamera className="w-5 h-5" />, title: 'Custom AI Style Theme', desc: 'We design a bespoke AI style for your event — Classic Hollywood, animated, editorial magazine, fantasy, retro, and more. Matched to your exact theme.' },
+  { icon: <FiImage className="w-5 h-5" />, title: 'Branded Overlays & Event Details', desc: 'Your logo, event name, date, and hashtag on every transformed photo. Every guest becomes a walking billboard the moment they share.' },
+  { icon: <FiShield className="w-5 h-5" />, title: 'Full White-Glove Service', desc: 'Delivery, setup, professional operation, and teardown all handled by our team. Focus on your guests — we handle the entire experience.' },
 ]
 
 const testimonials = [
-  { name: 'Alex P.', role: 'Brand Manager, Chicago', text: 'The 360 Booth drew a crowd all night. The slow-motion clips were incredible and every single guest posted their video. Best activation we\'ve ever booked.' },
-  { name: 'Andrea M.', role: 'Event Planner, Evanston', text: 'Setup was smooth, the attendant was amazing, and the content quality was next level. Our clients were blown away — we\'ve already booked again for the next event.' },
-  { name: 'Jeff R.', role: 'Corporate Host', text: 'Guests loved it. The branded overlays tied everything to our brand perfectly and the instant sharing made it so easy. The 360 Booth was the highlight of the night.' },
+  { name: 'Priya M.', role: 'Corporate Event Manager', text: 'Our guests completely lost it when they saw their AI photos. The Classic Hollywood transformation was jaw-dropping. Easiest event decision I\'ve ever made.' },
+  { name: 'Jason & Kelly', role: 'Wedding Reception', text: 'We had the animated style for our wedding and every single person left with the biggest smile. It\'s the most unique thing we\'ve ever seen at a wedding.' },
+  { name: 'Derek T.', role: 'Brand Activation Director', text: 'The social media reach we got from guests sharing their AI photos was unreal. Hundreds of impressions from a single event. We\'re booking again for every activation.' },
 ]
 
 const faqs = [
-  { question: 'How much space does the 360 Booth need?', answer: 'We recommend a 10x10 ft area with access to a standard power outlet. The platform itself is compact, but we need room for guests to step on safely and for the camera arm to spin freely.' },
-  { question: 'What\'s included in the rental?', answer: 'Everything — the 360 platform, high-speed camera, ring light, wind machine, props, on-site attendant, instant digital sharing (QR/AirDrop/SMS), custom video overlays, and full setup and breakdown.' },
-  { question: 'Can you add our branding to the videos?', answer: 'Absolutely. We design custom overlays with your logo, event name, hashtag, and brand colors. We can also add a song selection of your choice that plays in the background of every video. Every clip becomes branded content.' },
-  { question: 'How quickly do guests get their videos?', answer: 'Instantly. Videos are processed on-site in seconds and delivered to guest phones via QR code, AirDrop, SMS, or email — ready to post immediately.' },
-  { question: 'How many people can go on the platform at once?', answer: 'Our platform comfortably fits 2–4 people at a time. For larger groups, we can accommodate up to 6 guests depending on the setup.' },
-  { question: 'Do you travel outside Chicago?', answer: '' },
-  { question: 'How far in advance should I book?', answer: 'We recommend booking at least 6 months in advance. Weekends and holidays fill up fast. Contact us now to lock in your date before it\'s gone.' },
+  { question: 'What exactly is the AI Booth?', answer: 'The AI Booth captures a high-quality photo using our Premium Photobooth or Robot Photobooth, then instantly transforms it into a styled AI image — cinematic Hollywood, animated cartoon, editorial fashion, spy noir, and more. Guests receive their masterpiece on their phone within seconds.' },
+  { question: 'How long does the AI transformation take?', answer: 'The full process — from photo capture to transformed image on the guest\'s phone — typically takes under a minute. Most guests have their AI photo before they walk away from the booth.' },
+  { question: 'Can we choose the AI style for our event?', answer: 'Absolutely. We work with you before the event to select or design a custom AI style that matches your theme — Classic Hollywood, animated, sports star, space explorer, or a fully bespoke look built for your brand.' },
+  { question: 'How do guests receive their photos?', answer: 'Transformed photos are delivered instantly to guests\' phones via QR code, AirDrop, SMS, or email — no app download required. They can share to social media immediately.' },
+  { question: 'Do you need WiFi at the venue?', answer: 'We bring our own mobile connectivity for AI processing and delivery. Venue WiFi is helpful but not required — we\'ll confirm technical needs when you book.' },
+  { question: 'What events is the AI Booth best for?', answer: 'Weddings, corporate events, brand activations, galas, holiday parties, product launches, and any event where you want a truly unique photo experience that guests will talk about and share.' },
+  { question: 'How far in advance should I book?', answer: 'We recommend booking at least 3–6 months in advance for peak weekends. Popular dates fill quickly — submit your date and we\'ll confirm availability within 15 minutes.' },
 ]
 
 const companyLogos = [
@@ -652,4 +688,3 @@ const companyLogos = [
   '/images/pdsb.png', '/images/remax.png', '/images/ritz.webp', '/images/rlp.svg',
   '/images/stonex.png', '/images/talent.png', '/images/td.png', '/images/torontopearson.png', '/images/BMO.svg.png',
 ]
-

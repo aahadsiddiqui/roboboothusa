@@ -1,9 +1,15 @@
 /**
  * Regional markets: separate landing routes, contact URLs, phones, and intake emails.
  * Set NEXT_PUBLIC_CHICAGO_* and NEXT_PUBLIC_TEXAS_* in production; until then, Chicago/Texas
- * contact forms: Chicago uses Formspree; national/Texas use NEXT_PUBLIC_DEFAULT_FORMSPREE_URL or /api/contact.
- * fall back to the national defaults so the site still runs locally.
+ * contact forms use Formspree; national uses NEXT_PUBLIC_DEFAULT_FORMSPREE_URL or /api/contact.
+ * fall back to the regional defaults below so the site still runs locally.
  */
+
+import {
+  TEXAS_SERVICE_AREA,
+  texasAcrossPhrase,
+  texasServingLine,
+} from '../lib/texasServiceArea'
 
 export type MarketId = 'national' | 'chicago' | 'texas'
 
@@ -53,9 +59,12 @@ const chicagoContactFormPostUrl =
   process.env.NEXT_PUBLIC_CHICAGO_FORMSPREE_URL ?? 'https://formspree.io/f/xzdykapb'
 
 const texasPhoneDisplay =
-  process.env.NEXT_PUBLIC_TEXAS_INTAKE_PHONE_DISPLAY ?? nationalPhoneDisplay
-const texasPhoneTel = process.env.NEXT_PUBLIC_TEXAS_INTAKE_PHONE_TEL ?? nationalPhoneTel
-const texasEmail = process.env.NEXT_PUBLIC_TEXAS_INTAKE_EMAIL ?? nationalEmail
+  process.env.NEXT_PUBLIC_TEXAS_INTAKE_PHONE_DISPLAY ?? '737-273-3015'
+const texasPhoneTel =
+  process.env.NEXT_PUBLIC_TEXAS_INTAKE_PHONE_TEL ?? 'tel:+17372733015'
+const texasEmail = process.env.NEXT_PUBLIC_TEXAS_INTAKE_EMAIL ?? 'texas@roboboothusa.com'
+const texasContactFormPostUrl =
+  process.env.NEXT_PUBLIC_TEXAS_FORMSPREE_URL ?? 'https://formspree.io/f/maqzypoa'
 
 export const MARKETS: Record<MarketId, MarketConfig> = {
   national: {
@@ -119,27 +128,27 @@ export const MARKETS: Record<MarketId, MarketConfig> = {
     contactPath: '/texas/contact',
     heroBefore: "Texas's First ",
     heroHighlight: 'Robot Photobooth',
-    heroLine2: 'Serving Texas & Surrounding Areas',
+    heroLine2: texasServingLine,
     meta: {
       title: `RoboBooth Texas | Texas's First Robot Photobooth`,
       description:
-        "Texas's first robot photobooth for weddings, corporate events, and brand activations across Texas and surrounding areas.",
+        `Texas's first robot photobooth for weddings, corporate events, and brand activations ${texasAcrossPhrase}.`,
       ogTitle: `RoboBooth Texas | Texas's First Robot Photobooth`,
       ogDescription:
-        "Texas's first robot photobooth. Book RoboBooth for your next Texas event.",
+        `Texas's first robot photobooth. Book RoboBooth for your next event in ${TEXAS_SERVICE_AREA}.`,
       ogUrl: `${SITE}/texas`,
       canonical: `${SITE}/texas`,
       keywords:
-        'Texas photo booth, robot photo booth Texas, event entertainment Texas, wedding photo booth Texas',
+        'Texas photo booth, robot photo booth Texas, Austin photo booth, Dallas photo booth, Houston photo booth, San Antonio photo booth',
     },
-    regionTrustBlurb: 'Trusted by leading brands across Texas',
-    finalCtaBlurb: 'Get a custom quote in minutes. We proudly serve events across Texas and surrounding areas.',
+    regionTrustBlurb: `Trusted by leading brands ${texasAcrossPhrase}`,
+    finalCtaBlurb: `Get a custom quote in minutes. We proudly serve events ${texasAcrossPhrase}.`,
     phoneDisplay: texasPhoneDisplay,
     phoneTel: texasPhoneTel,
     intakeEmail: texasEmail,
     analyticsRegion: 'Texas',
     formSource: 'Contact Page (Texas)',
-    contactFormPostUrl: process.env.NEXT_PUBLIC_TEXAS_FORMSPREE_URL ?? defaultContactFormPostUrl,
+    contactFormPostUrl: texasContactFormPostUrl,
   },
 }
 

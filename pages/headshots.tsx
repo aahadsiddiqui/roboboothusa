@@ -8,6 +8,7 @@ import { landingCanonical } from '../lib/landingSeo'
 import { getLandingTrustedLine } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
 import { withMarketTravelFaq } from '../lib/travelAreaFaq'
+import { texasInPhrase } from '../lib/texasServiceArea'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -86,7 +87,7 @@ export default function HeadshotsPage() {
             market.id === 'chicago'
               ? 'On-location professional headshots for corporate teams, conferences, and LinkedIn profiles in Chicago & surrounding areas. Studio-quality lighting. RAW + Edited delivered within a week.'
               : market.id === 'texas'
-                ? 'On-location professional headshots for corporate teams, conferences, and LinkedIn profiles in Texas & surrounding areas. Studio-quality lighting. RAW + Edited delivered within a week.'
+                ? `On-location professional headshots for corporate teams, conferences, and LinkedIn profiles ${texasInPhrase}. Studio-quality lighting. RAW + Edited delivered within a week.`
                 : 'On-location professional headshots for corporate teams, conferences, and LinkedIn profiles across Chicago & USA. Studio-quality lighting. RAW + Edited delivered within a week.'
           }
         />

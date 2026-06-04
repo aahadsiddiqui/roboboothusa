@@ -29,6 +29,14 @@ const SubtleCTA = ({ label, onQuote }: { label: string; onQuote: () => void }) =
    ════════════════════════════════════════════════════════════════ */
 export default function RobotBoothPage({ market = MARKETS.national }: { market?: MarketConfig }) {
   const rc = getRobotBoothPageCopy(market)
+  const showRegionalContact = market.id !== 'national'
+  const offersAerial = market.id === 'national'
+  const platinumAddonLine = offersAerial
+    ? 'Add-on: 360 Booth, Premium Photobooth, or Aerial Booth'
+    : 'Add-on: 360 Booth or Premium Photobooth'
+  const platinumDesc = offersAerial
+    ? 'The ultimate event setup — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.'
+    : 'The ultimate event setup — add a 360 Booth or Premium Photobooth to your activation.'
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
   const [form, setForm] = useState({ firstName: '', email: '', phone: '', eventDate: '', budget: '' })
@@ -115,8 +123,8 @@ export default function RobotBoothPage({ market = MARKETS.national }: { market?:
                       className="w-full sm:w-auto bg-[#fce4a6] text-black px-6 py-3.5 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group text-center">
                       Reserve Your Date <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
-                    <a href={market.phoneTel} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
-                      <FiPhone className="w-4 h-4" /> Contact Us
+                    <a href={showRegionalContact ? market.phoneTel : market.contactPath} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
+                      <FiPhone className="w-4 h-4" /> {showRegionalContact ? `Call ${market.phoneDisplay}` : 'Contact Us'}
                     </a>
                   </div>
                   <p className="text-white/40 text-[11px] md:text-xs">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
@@ -303,11 +311,11 @@ export default function RobotBoothPage({ market = MARKETS.national }: { market?:
                         </span>
                       </div>
                       <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The ultimate event setup — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.</p>
+                      <p className="text-white/60 text-xs text-center mb-6">{platinumDesc}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Everything included in the Gold Package',
-                          'Add-on: 360 Booth, Premium Photobooth, or Aerial Booth',
+                          platinumAddonLine,
                           'Two interactive booth activations running simultaneously',
                           'Maximum guest engagement from multiple experiences',
                           'One team coordinating everything seamlessly',
@@ -515,8 +523,8 @@ export default function RobotBoothPage({ market = MARKETS.national }: { market?:
                   className="w-full sm:w-auto bg-[#fce4a6] text-black px-7 py-3.5 md:px-8 md:py-4 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group">
                   Reserve Your Date Now <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
-                <a href={market.phoneTel} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
-                  <FiPhone className="w-4 h-4" /> Contact Us
+                <a href={showRegionalContact ? market.phoneTel : market.contactPath} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
+                  <FiPhone className="w-4 h-4" /> {showRegionalContact ? market.phoneDisplay : 'Contact Us'}
                 </a>
               </div>
               <p className="text-white/30 text-[10px] md:text-xs mt-2">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
@@ -592,7 +600,7 @@ export default function RobotBoothPage({ market = MARKETS.national }: { market?:
             <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t border-[#fce4a6]/30 px-3 py-3 safe-area-pb">
               <div className="flex gap-2">
-                <a href={market.phoneTel} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
+                <a href={showRegionalContact ? market.phoneTel : market.contactPath} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
                   <FiPhone className="w-4 h-4" /> Call Now
                 </a>
                 <button onClick={openQuote} className="flex-[2] flex items-center justify-center gap-2 bg-[#fce4a6] text-black py-3 rounded-full font-bold text-sm shadow-lg shadow-[#fce4a6]/20">

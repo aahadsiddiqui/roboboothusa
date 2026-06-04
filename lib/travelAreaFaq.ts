@@ -1,4 +1,5 @@
 import type { MarketConfig } from '../data/markets'
+import { TEXAS_SERVICE_AREA, texasServingLine } from './texasServiceArea'
 
 /** Illinois suburbs named on Chicago-area marketing (no Canadian cities). */
 export const CHICAGO_METRO_SUBURBS =
@@ -10,7 +11,7 @@ export function eventPageRatingLine(market: MarketConfig): string {
     return `5.0 Rating · Chicago area & ${CHICAGO_METRO_SUBURBS}`
   }
   if (market.id === 'texas') {
-    return '5.0 Rating · Serving Texas & surrounding areas'
+    return texasServingLine.replace('Serving ', '5.0 Rating · Serving ')
   }
   return '5.0 Rating · Serving Chicago & USA'
 }
@@ -28,7 +29,7 @@ export function travelAreaFaqPair(market: MarketConfig): { question: string; ans
     return {
       question: 'Do you travel for events in Texas?',
       answer:
-        'Yes — we serve the greater metro area and travel across Texas and the region. Contact us with your venue and date.',
+        `Yes — we serve the Texas Triangle (Austin, Dallas, Houston), San Antonio, and surrounding areas. Contact us with your venue and date.`,
     }
   }
   return {

@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import ProductHub from './ProductHub'
 import ScrollingTestimonials from './ScrollingTestimonials'
 import Navbar from './Navbar'
-import { products } from '../data/products'
+import { productsForMarket } from '../lib/marketProducts'
 import { eventTypes } from '../data/events'
 import type { MarketConfig } from '../data/markets'
 import { eventTypeHref, featuredBrandActivationsHref, featuredCorporateHref, featuredWeddingHref } from '../lib/eventRoutes'
@@ -97,11 +97,7 @@ export default function MarketHome({ market }: Props) {
       <ProductHub
         title=""
         subtitle=""
-        products={
-          market.id === 'chicago'
-            ? products.filter((p) => p.slug !== 'aerial-booth')
-            : products
-        }
+        products={productsForMarket(market)}
         hideHeader
         market={market}
       />

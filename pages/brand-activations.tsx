@@ -331,11 +331,11 @@ export default function BrandActivations({ browserPath }: InferGetServerSideProp
                         </span>
                       </div>
                       <h3 className="text-lg md:text-xl font-black text-center mb-2">Full Activation + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The ultimate brand launch experience — add a 360 Booth, Aerial Booth, or Premium Photobooth.</p>
+                      <p className="text-white/60 text-xs text-center mb-6">{L('The ultimate brand launch experience — add a 360 Booth, Aerial Booth, or Premium Photobooth.')}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Everything included in the Gold Package',
-                          'Add-on: 360 Booth, Aerial Booth, or Premium Photobooth',
+                          L('Add-on: 360 Booth, Aerial Booth, or Premium Photobooth'),
                           'Two interactive activations running simultaneously',
                           'Maximum brand exposure and guest engagement',
                           'One team coordinating everything seamlessly',
@@ -387,8 +387,8 @@ export default function BrandActivations({ browserPath }: InferGetServerSideProp
                 {whyBrandsLove.map((item, i) => (
                   <Reveal key={i} delay={i * 0.06} className="bg-white/[0.04] border border-white/10 rounded-xl p-4 md:p-5 hover:border-[#fce4a6]/30 transition-colors group">
                     <div className="text-[#fce4a6] mb-2 md:mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
-                    <h3 className="font-bold text-sm md:text-base mb-1">{item.title}</h3>
-                    <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{item.desc}</p>
+                    <h3 className="font-bold text-sm md:text-base mb-1">{L(item.title)}</h3>
+                    <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{L(item.desc)}</p>
                   </Reveal>
                 ))}
               </div>
@@ -430,8 +430,8 @@ export default function BrandActivations({ browserPath }: InferGetServerSideProp
                       <div className="w-12 h-12 rounded-xl bg-[#fce4a6]/10 border border-[#fce4a6]/30 flex items-center justify-center mb-4 text-[#fce4a6] group-hover:bg-[#fce4a6]/20 transition-colors">
                         {item.icon}
                       </div>
-                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{item.title}</h3>
-                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{item.desc}</p>
+                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{L(item.title)}</h3>
+                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{L(item.desc)}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -530,13 +530,13 @@ export default function BrandActivations({ browserPath }: InferGetServerSideProp
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                       className="w-full text-left bg-white/[0.04] border border-white/10 rounded-xl p-3.5 md:p-4 hover:border-[#fce4a6]/30 transition-colors">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{faq.question}</h3>
+                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{L(faq.question)}</h3>
                         {expandedFaq === i ? <FiChevronUp className="text-[#fce4a6] w-4 h-4 flex-shrink-0" /> : <FiChevronDown className="text-[#fce4a6] w-4 h-4 flex-shrink-0" />}
                       </div>
                       <AnimatePresence>
                         {expandedFaq === i && (
                           <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-white/60 text-xs md:text-sm mt-2 leading-relaxed">
-                            {faq.answer}
+                            {L(faq.answer)}
                           </motion.p>
                         )}
                       </AnimatePresence>

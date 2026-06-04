@@ -9,6 +9,7 @@ import { landingCanonical } from '../lib/landingSeo'
 import { getLandingTrustedLine } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
 import { withMarketTravelFaq } from '../lib/travelAreaFaq'
+import { texasInPhrase } from '../lib/texasServiceArea'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -87,7 +88,7 @@ export default function PhotographyPage() {
             market.id === 'chicago'
               ? 'Professional photography & videography for events, corporate, and private sessions in Chicago & surrounding areas. RAW + Edited media delivered within a week.'
               : market.id === 'texas'
-                ? 'Professional photography & videography for events, corporate, and private sessions in Texas & surrounding areas. RAW + Edited media delivered within a week.'
+                ? `Professional photography & videography for events, corporate, and private sessions ${texasInPhrase}. RAW + Edited media delivered within a week.`
                 : 'Professional Photography & Videography for events, corporate, and private sessions across Chicago & USA. RAW + Edited photos delivered within a week. Book now.'
           }
         />
