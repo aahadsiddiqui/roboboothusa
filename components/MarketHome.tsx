@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiPhone, FiArrowRight, FiChevronDown, FiMail } from 'react-icons/fi'
 import { useRouter } from 'next/router'
@@ -10,6 +11,11 @@ import { productsForMarket } from '../lib/marketProducts'
 import { eventTypes } from '../data/events'
 import type { MarketConfig } from '../data/markets'
 import { eventTypeHref, featuredBrandActivationsHref, featuredCorporateHref, featuredWeddingHref } from '../lib/eventRoutes'
+
+const stateCards = [
+  { name: 'Illinois', href: '/chicago', image: '/images/state-illinois.png' },
+  { name: 'Texas', href: '/texas', image: '/images/state-texas.png' },
+]
 
 const companyLogos = [
   '/images/adamas.png', '/images/bell.png', '/images/bgo.png', '/images/equifax.svg',
@@ -90,17 +96,55 @@ export default function MarketHome({ market }: Props) {
 
       <section className="pb-2 px-4">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="max-w-7xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.3em] text-[#fce4a6] text-center md:text-left">Choose Your Event Experience</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-[#fce4a6] text-center md:text-left">
+            {market.id === 'national' ? 'Choose Your State' : 'Choose Your Event Experience'}
+          </p>
         </motion.div>
       </section>
 
-      <ProductHub
-        title=""
-        subtitle=""
-        products={productsForMarket(market)}
-        hideHeader
-        market={market}
-      />
+      {market.id === 'national' ? (
+        <section className="pb-8 md:pb-12 px-4">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {stateCards.map((state, i) => (
+              <motion.div
+                key={state.name}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 + i * 0.1, duration: 0.5 }}
+              >
+                <Link
+                  href={state.href}
+                  className="group relative block aspect-[4/3] md:aspect-[16/10] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 hover:border-[#fce4a6]/50 transition-colors shadow-xl shadow-black/40"
+                >
+                  <img
+                    src={state.image}
+                    alt={`${state.name} skyline`}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-5 md:p-7">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1">
+                      {state.name}
+                    </h2>
+                    <p className="text-[#fce4a6] text-sm md:text-base font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                      Explore RoboBooth
+                      <FiArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <ProductHub
+          title=""
+          subtitle=""
+          products={productsForMarket(market)}
+          hideHeader
+          market={market}
+        />
+      )}
 
       <section className="py-8 md:py-10 border-t border-white/5 overflow-hidden bg-black">
         <div className="max-w-7xl mx-auto px-4 mb-4">
@@ -144,6 +188,7 @@ export default function MarketHome({ market }: Props) {
         </div>
       </section>
 
+      {market.id !== 'national' && (
       <section className="py-10 md:py-14 px-4 border-t border-white/5 bg-black">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
@@ -240,11 +285,13 @@ export default function MarketHome({ market }: Props) {
           </motion.p>
         </div>
       </section>
+      )}
 
       <section className="bg-black">
         <ScrollingTestimonials />
       </section>
 
+      {market.id !== 'national' && (
       <section className="py-12 md:py-16 px-4 border-t border-white/5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -286,9 +333,11 @@ export default function MarketHome({ market }: Props) {
           </p>
         </motion.div>
       </section>
+      )}
 
-      <div className="h-20 md:h-0" />
+      {market.id !== 'national' && <div className="h-20 md:h-0" />}
 
+      {market.id !== 'national' && (
       <motion.a
         whileTap={{ scale: 0.97 }}
         href={market.contactPath}
@@ -296,6 +345,7 @@ export default function MarketHome({ market }: Props) {
       >
         Get a Quote <FiArrowRight className="w-4 h-4" />
       </motion.a>
+      )}
     </div>
   )
 }

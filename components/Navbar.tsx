@@ -16,6 +16,7 @@ export default function Navbar() {
   const homeHref = market.id === 'national' ? '/' : market.basePath
   /** States switcher only on the national site root experience, not on /chicago or /texas. */
   const showStatesNav = market.id === 'national'
+  const isNationalSite = showStatesNav
   /** Show local phone on regional hubs only (national routes stay digits-free in the header). */
   const showRegionalPhone = market.id !== 'national'
 
@@ -83,6 +84,7 @@ export default function Navbar() {
             </Link>
 
             {/* Products dropdown */}
+            {!isNationalSite && (
             <div ref={dropdownRef} className="relative">
               <button
                 onClick={() => { setProductsOpen(!productsOpen); setEventsOpen(false); setStatesOpen(false) }}
@@ -117,8 +119,10 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </div>
+            )}
 
             {/* Events dropdown */}
+            {!isNationalSite && (
             <div ref={eventsDropdownRef} className="relative">
               <button
                 onClick={() => { setEventsOpen(!eventsOpen); setProductsOpen(false); setStatesOpen(false) }}
@@ -168,6 +172,7 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </div>
+            )}
 
             {showStatesNav && (
               <div ref={statesDropdownRef} className="relative">
@@ -193,7 +198,7 @@ export default function Navbar() {
                           onClick={() => setStatesOpen(false)}
                           className="flex items-center justify-between px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-[#fce4a6]/10 transition-colors group"
                         >
-                          <span>Chicago</span>
+                          <span>Illinois</span>
                           <FiArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#fce4a6]" />
                         </Link>
                         <Link
@@ -211,10 +216,11 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Contact */}
+            {!isNationalSite && (
             <Link href={market.contactPath} className="text-sm text-white/70 hover:text-white transition-colors font-medium">
               Contact
             </Link>
+            )}
             {showRegionalPhone && (
               <a
                 href={market.phoneTel}
@@ -228,6 +234,7 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {!isNationalSite && (
             <motion.a
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
@@ -236,6 +243,7 @@ export default function Navbar() {
             >
               Get a Quote
             </motion.a>
+            )}
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -268,6 +276,8 @@ export default function Navbar() {
                 <FiArrowRight className="w-4 h-4 text-[#fce4a6]/50 group-hover:text-[#fce4a6] group-hover:translate-x-1 transition-all" />
               </Link>
 
+              {!isNationalSite && (
+              <>
               <p className="text-[#fce4a6]/60 text-[10px] uppercase tracking-[0.2em] font-semibold mb-3">Products</p>
               <div className="space-y-1 mb-8">
                 {navProducts.map((product, i) => (
@@ -314,6 +324,8 @@ export default function Navbar() {
                   </motion.div>
                 ))}
               </div>
+              </>
+              )}
 
               {showStatesNav && (
                 <>
@@ -324,7 +336,7 @@ export default function Navbar() {
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center justify-between py-3 px-3 rounded-xl text-white/80 hover:text-white hover:bg-[#fce4a6]/10 transition-colors group"
                     >
-                      <span className="text-base font-medium">Chicago</span>
+                      <span className="text-base font-medium">Illinois</span>
                       <FiArrowRight className="w-4 h-4 text-[#fce4a6]/50 group-hover:text-[#fce4a6] group-hover:translate-x-1 transition-all" />
                     </Link>
                     <Link
@@ -339,6 +351,8 @@ export default function Navbar() {
                 </>
               )}
 
+              {!isNationalSite && (
+              <>
               <div className="border-t border-white/10 pt-6 space-y-3">
                 <Link
                   href={market.contactPath}
@@ -378,6 +392,8 @@ export default function Navbar() {
                   Get a Quote <FiArrowRight className="inline ml-1.5 w-4 h-4" />
                 </Link>
               </div>
+              </>
+              )}
             </motion.div>
           </motion.div>
         )}

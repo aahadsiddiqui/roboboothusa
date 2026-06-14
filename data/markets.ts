@@ -73,7 +73,7 @@ export const MARKETS: Record<MarketId, MarketConfig> = {
     contactPath: '/contact',
     heroBefore: "USA's First ",
     heroHighlight: 'Robot PhotoBooth',
-    heroLine2: 'Serving USA and Surrounding Areas',
+    heroLine2: 'Serving the State of Illinois & Texas',
     meta: {
       title: `RoboBooth | USA's First Robot PhotoBooth`,
       description:

@@ -13,13 +13,13 @@ export default function Footer() {
 
   const quickLinks = [
     { href: homeHref, label: 'Home' },
-    { href: market.contactPath, label: 'Contact' },
+    ...(market.id !== 'national' ? [{ href: market.contactPath, label: 'Contact' }] : []),
     { href: '/privacy-policy', label: 'Privacy Policy' },
   ]
 
   const regionTagline =
     market.id === 'national'
-      ? 'Proudly serving the USA.'
+      ? 'Proudly Serving the state of Illinois & Texas.'
       : market.id === 'texas'
         ? `Proudly serving ${TEXAS_SERVICE_AREA}.`
         : `Proudly serving ${market.analyticsRegion} and surrounding areas.`
@@ -28,7 +28,7 @@ export default function Footer() {
     <div className="bg-black w-full">
       <footer className="bg-black text-white border-t border-white/20">
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className={`grid grid-cols-1 gap-8 ${market.id === 'national' ? 'md:grid-cols-3' : 'md:grid-cols-4'}`}>
             <div>
               <h3 className="text-lg font-bold mb-4 text-white">Robo Booth</h3>
               <p className="text-white/70">The Future of Event Photography</p>
@@ -47,6 +47,7 @@ export default function Footer() {
               </ul>
             </div>
 
+            {market.id !== 'national' && (
             <div>
               <h4 className="text-lg font-bold mb-4 text-white">Contact</h4>
               <p className="text-white/70 text-sm leading-relaxed">
@@ -59,24 +60,23 @@ export default function Footer() {
                 </Link>{' '}
                 and our team will reply quickly.
               </p>
-              {market.id !== 'national' && (
-                <div className="mt-4 space-y-2 text-white/70 text-sm">
-                  <p>
-                    <a href={market.phoneTel} className="text-[#fce4a6] hover:text-white transition-colors">
-                      {market.phoneDisplay}
-                    </a>
-                  </p>
-                  <p>
-                    <a
-                      href={`mailto:${market.intakeEmail}`}
-                      className="text-[#fce4a6] hover:text-white transition-colors break-all"
-                    >
-                      {market.intakeEmail}
-                    </a>
-                  </p>
-                </div>
-              )}
+              <div className="mt-4 space-y-2 text-white/70 text-sm">
+                <p>
+                  <a href={market.phoneTel} className="text-[#fce4a6] hover:text-white transition-colors">
+                    {market.phoneDisplay}
+                  </a>
+                </p>
+                <p>
+                  <a
+                    href={`mailto:${market.intakeEmail}`}
+                    className="text-[#fce4a6] hover:text-white transition-colors break-all"
+                  >
+                    {market.intakeEmail}
+                  </a>
+                </p>
+              </div>
             </div>
+            )}
 
             <div>
               <h4 className="text-lg font-bold mb-4 text-white">Follow Us</h4>
@@ -108,7 +108,7 @@ export default function Footer() {
 
 const socialLinks = [
   {
-    href: 'https://instagram.com/roboboothusa.com',
+    href: 'https://www.instagram.com/roboboothusa',
     label: 'Instagram',
     icon: (
       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
