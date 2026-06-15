@@ -43,6 +43,7 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
     [market.basePath, market.id],
   )
   const L = useCallback((s: string) => localizeMarketingCopy(s, market), [market])
+  const customizationItems = market.id === 'texas' ? texasCustomizations : chicagoCustomizations
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
   const [form, setForm] = useState({ firstName: '', email: '', phone: '', eventDate: '', budget: '' })
@@ -146,8 +147,17 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                     <span className="text-[#fce4a6]">Robot Photobooth</span> for Corporate Events
                   </h1>
                   <p className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed mb-5 max-w-xl">
-                    Our robot photobooth roams your event, drives organic social sharing, captures compliance-ready consumer leads, and delivers branded content to every guest&apos;s phone in real-time.{' '}
-                    <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
+                    {market.id === 'texas' ? (
+                      <>
+                        Our robot photobooth roams your event, drives organic social sharing, captures compliance-ready consumer leads, and delivers branded content to every guest&apos;s phone in real-time.{' '}
+                        <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
+                      </>
+                    ) : (
+                      <>
+                        Our robot photobooth roams your event, engages your team, delivers branded content to every guest&apos;s phone in real-time, and prints physical keepsakes on the spot.{' '}
+                        <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
+                      </>
+                    )}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-3">
                     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
@@ -421,7 +431,7 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                 <p className="text-white/50 text-xs md:text-sm">Every detail of the activation can be tailored to your company</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {customizations.map((item, i) => (
+                {customizationItems.map((item, i) => (
                   <Reveal key={i} delay={i * 0.1}>
                     <div className="bg-gradient-to-br from-[#fce4a6]/10 to-transparent border border-[#fce4a6]/20 rounded-2xl p-5 md:p-6 h-full hover:border-[#fce4a6]/40 transition-colors group">
                       <div className="w-12 h-12 rounded-xl bg-[#fce4a6]/10 border border-[#fce4a6]/30 flex items-center justify-center mb-4 text-[#fce4a6] group-hover:bg-[#fce4a6]/20 transition-colors">
@@ -672,7 +682,12 @@ const whyClientsLove = [
   { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Branded Experience', desc: 'Custom overlays, themed robot appearance, and branded digital delivery. Every touchpoint reflects your company\'s identity.' },
 ]
 
-const customizations = [
+const chicagoCustomizations = [
+  { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays, Branding & Theme', desc: 'Every photo is branded with your logo, event name, date, and company colors. The robot can also be dressed to match your event theme — from formal galas to branded product launches — making every touchpoint a professional extension of your brand.' },
+  { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with custom voice lines — even in your voice or a team member\'s voice — that greet guests and announce each photo. Engaging, professional, and fully on-brand for every interaction.' },
+]
+
+const texasCustomizations = [
   { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays', desc: 'Every photo is branded with your logo, event name, date, and company colors — a consistent, professional branded experience on every single shot.' },
   { icon: <FiStar className="w-5 h-5" />, title: 'Branding & Theme', desc: 'The robot can be dressed to match your event theme — from formal galas to branded product launches. We also create custom vinyl decals of your logo, printed and applied directly to the robot for a fully on-brand physical presence at your activation.' },
   { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with custom voice lines — even in your voice or a team member\'s voice — that greet guests and announce each photo. Engaging, professional, and fully on-brand for every interaction.' },
