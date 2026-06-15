@@ -146,7 +146,7 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                     <span className="text-[#fce4a6]">Robot Photobooth</span> for Corporate Events
                   </h1>
                   <p className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed mb-5 max-w-xl">
-                    Our robot photobooth roams your event, engages your team, delivers branded content to every guest&apos;s phone in real-time, and prints physical keepsakes on the spot.{' '}
+                    Our robot photobooth roams your event, drives organic social sharing, captures compliance-ready consumer leads, and delivers branded content to every guest&apos;s phone in real-time.{' '}
                     <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-3">
@@ -673,7 +673,8 @@ const whyClientsLove = [
 ]
 
 const customizations = [
-  { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays, Branding & Theme', desc: 'Every photo is branded with your logo, event name, date, and company colors. The robot can also be dressed to match your event theme — from formal galas to branded product launches — making every touchpoint a professional extension of your brand.' },
+  { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays', desc: 'Every photo is branded with your logo, event name, date, and company colors — a consistent, professional branded experience on every single shot.' },
+  { icon: <FiStar className="w-5 h-5" />, title: 'Branding & Theme', desc: 'The robot can be dressed to match your event theme — from formal galas to branded product launches. We also create custom vinyl decals of your logo, printed and applied directly to the robot for a fully on-brand physical presence at your activation.' },
   { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with custom voice lines — even in your voice or a team member\'s voice — that greet guests and announce each photo. Engaging, professional, and fully on-brand for every interaction.' },
 ]
 
