@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiClock, FiX } from 'react-icons/fi'
 import Navbar from './Navbar'
 import { appendUtmParams } from '../lib/utmParams'
+import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 import { useRouter } from 'next/router'
 import { getMarketForPath } from '../data/markets'
 import { eventPageRatingLine, withMarketTravelFaq } from '../lib/travelAreaFaq'
@@ -223,7 +224,7 @@ export default function EventPageLayout(props: EventPageProps) {
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true) } else { alert('Failed to submit. Please try again.') }
+      if (res.ok) { setSuccess(true); trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 

@@ -8,6 +8,7 @@ import { useLandingMarket } from '../hooks/useLandingMarket'
 import { landingCanonical } from '../lib/landingSeo'
 import { getLandingTrustedLine, getRobotBoothPageCopy } from '../lib/productLocalize'
 import { appendUtmParams } from '../lib/utmParams'
+import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 import { withMarketTravelFaq } from '../lib/travelAreaFaq'
 import { TEXAS_SERVICE_AREA, texasServingLine } from '../lib/texasServiceArea'
 
@@ -83,7 +84,7 @@ export default function ThreeSixtyBoothPage() {
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true) } else { alert('Failed to submit. Please try again.') }
+      if (res.ok) { setSuccess(true); trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 

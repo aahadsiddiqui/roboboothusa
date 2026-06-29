@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiClock, FiX, FiZap, FiUsers, FiStar, FiShield, FiImage, FiShare2 } from 'react-icons/fi'
 import Navbar from '../components/Navbar'
 import { appendUtmParams } from '../lib/utmParams'
+import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 import { getMarketForPath } from '../data/markets'
 import { getRegionalLandingSsp } from '../lib/regionalLandingSsp'
 import {
@@ -44,6 +45,7 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
   )
   const L = useCallback((s: string) => localizeMarketingCopy(s, market), [market])
   const customizationItems = market.id === 'texas' ? texasCustomizations : chicagoCustomizations
+  const isTexas = market.id === 'texas'
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
   const [form, setForm] = useState({ firstName: '', email: '', phone: '', eventDate: '', budget: '' })
@@ -83,13 +85,13 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
       const fd = new FormData()
       fd.append('first-name', form.firstName); fd.append('phone-number', form.phone); fd.append('email', form.email)
       fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', 'Corporate Event')
-      fd.append('package', packageType === 'gold' ? 'Gold Package (Corporate Robot + Event Photography)' : packageType === 'platinum' ? 'Platinum Package (Corporate Robot + Event Photography + Second Booth)' : packageType === 'bronze' ? 'Bronze Package (Corporate Robot Only)' : 'General Inquiry')
+      fd.append('package', packageType === 'gold' ? (isTexas ? 'Gold Package (Corporate Robot + 360 Booth)' : 'Gold Package (Corporate Robot + Event Photography)') : packageType === 'platinum' ? (isTexas ? 'Platinum Package (Corporate Robot + Second Robot + 360 Booth)' : 'Platinum Package (Corporate Robot + Event Photography + Second Booth)') : packageType === 'bronze' ? 'Bronze Package (Corporate Robot Only)' : 'General Inquiry')
       fd.append('_replyto', form.email)
       fd.append('source', market.id === 'national' ? 'Corporate Page' : `Corporate Page (${market.analyticsRegion})`)
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true) } else { alert('Failed to submit. Please try again.') }
+      if (res.ok) { setSuccess(true); trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 
@@ -299,7 +301,10 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                           ⭐ Most Popular · Gold
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + <span className="text-[#fce4a6]">Event Photography</span></h3>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">
+                        Robot Photobooth +{' '}
+                        <span className="text-[#fce4a6]">{isTexas ? '360 Booth' : 'Event Photography'}</span>
+                      </h3>
                       <p className="text-white/60 text-xs text-center mb-6">Capture every moment of your event from two unforgettable perspectives.</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
@@ -337,7 +342,13 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
                           💎 Platinum Package
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + Photography + <span className="text-white/80">Second Booth</span></h3>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">
+                        {isTexas ? (
+                          <>Robot Photobooth + <span className="text-white/80">Second Robot & 360 Booth</span></>
+                        ) : (
+                          <>Robot Photobooth + Photography + <span className="text-white/80">Second Booth</span></>
+                        )}
+                      </h3>
                       <p className="text-white/60 text-xs text-center mb-6">{L('The ultimate corporate event experience — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.')}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
@@ -596,13 +607,13 @@ export default function Corporate({ browserPath }: InferGetServerSidePropsType<t
               {packageType === 'gold' && (
                 <div className="bg-[#fce4a6] rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">⭐ Gold Package Selected</span>
-                  <span className="text-black/60 text-[10px]">Corporate Robot + Event Photography</span>
+                  <span className="text-black/60 text-[10px]">{isTexas ? 'Corporate Robot + 360 Booth' : 'Corporate Robot + Event Photography'}</span>
                 </div>
               )}
               {packageType === 'platinum' && (
                 <div className="bg-gradient-to-r from-white/95 to-gray-100 border border-gray-300 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">💎 Platinum Package Selected</span>
-                  <span className="text-black/60 text-[10px]">Robot + Event Photography + Second Booth</span>
+                  <span className="text-black/60 text-[10px]">{isTexas ? 'Second Robot + 360 Booth' : 'Robot + Event Photography + Second Booth'}</span>
                 </div>
               )}
               <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">{packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Get a Corporate Quote'}</h2>

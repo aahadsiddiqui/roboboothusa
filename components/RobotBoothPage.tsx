@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiClock, FiX, FiMapPin, FiZap, FiMic, FiImage, FiUsers, FiSmile, FiStar } from 'react-icons/fi'
 import Navbar from './Navbar'
 import { appendUtmParams } from '../lib/utmParams'
+import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 import { MARKETS, type MarketConfig } from '../data/markets'
 import { getRobotBoothPageCopy } from '../lib/productLocalize'
 
@@ -75,7 +76,7 @@ export default function RobotBoothPage({ market = MARKETS.national }: { market?:
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true) } else { alert('Failed to submit. Please try again.') }
+      if (res.ok) { setSuccess(true); trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 

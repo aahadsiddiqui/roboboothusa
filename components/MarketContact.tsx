@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 import { useMetaPixel } from '../hooks/useMetaPixel'
 import { useUTM } from '../hooks/useUTM'
 import type { MarketConfig } from '../data/markets'
+import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 
 const budgetsByProduct: Record<string, { value: string; label: string }[]> = {
   'Robot Photobooth': [
@@ -192,6 +193,7 @@ export default function MarketContact({ market }: Props) {
                       })
                       if (response.ok) {
                         setShowToast(true)
+                        trackTexasMetaLead(market.id)
                         form.reset()
                         setTimeout(() => setShowToast(false), 3000)
                       } else {
