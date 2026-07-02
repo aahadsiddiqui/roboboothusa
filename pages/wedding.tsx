@@ -186,7 +186,7 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
             </div>
             <div className="relative w-full overflow-hidden">
               <div className="animate-marquee flex items-center gap-10 md:gap-14 px-4">
-                {[...companyLogos, ...companyLogos].map((logo, i) => (
+                {[...(market.id === 'chicago' ? chicagoCompanyLogos : companyLogos), ...(market.id === 'chicago' ? chicagoCompanyLogos : companyLogos)].map((logo, i) => (
                   <div key={i} className="flex-shrink-0 w-32 md:w-44 h-20 md:h-24 flex items-center justify-center">
                     <img src={logo} alt="Client" className={`w-full h-full object-contain opacity-60 hover:opacity-100 transition-opacity ${logo.includes('ritz.webp') || logo.includes('hilton.png') ? 'filter invert grayscale' : logo.includes('td.png') ? '' : 'filter brightness-0 invert'}`} loading="lazy" />
                   </div>
@@ -681,4 +681,9 @@ const companyLogos = [
   '/images/geotab.png', '/images/hilton.png', '/images/infosys.png', '/images/meta.png',
   '/images/pdsb.png', '/images/remax.png', '/images/ritz.webp', '/images/rlp.svg',
   '/images/stonex.png', '/images/talent.png', '/images/td.png', '/images/torontopearson.png', '/images/BMO.svg.png',
+]
+
+const chicagoCompanyLogos = [
+  '/images/adamas.png', '/images/equifax.svg', '/images/hilton.png', '/images/infosys.png',
+  '/images/meta.png', '/images/remax.png', '/images/ritz.webp', '/images/stonex.png', '/images/talent.png',
 ]
