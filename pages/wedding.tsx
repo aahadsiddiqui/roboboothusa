@@ -195,6 +195,30 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
             </div>
           </section>
 
+          {/* ── Event Coverage ── */}
+          <section className="py-8 md:py-10 px-4 border-t border-white/5">
+            <div className="max-w-5xl mx-auto">
+              <Reveal className="text-center mb-6">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">
+                  Celebrating love stories{' '}
+                  <span className="text-[#fce4a6]">
+                    {market.id === 'chicago' ? 'across Chicago' : market.id === 'texas' ? 'across Texas' : 'across the USA'}
+                  </span>
+                </h2>
+              </Reveal>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-w-4xl mx-auto">
+                {weddingEventTypes.map((item, i) => (
+                  <Reveal key={i} delay={i * 0.05}>
+                    <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3 md:p-4 text-center hover:border-[#fce4a6]/30 transition-colors group">
+                      <div className="text-2xl mb-1.5">{item.emoji}</div>
+                      <p className="text-white/70 text-[11px] md:text-xs font-medium leading-tight">{item.label}</p>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* ── How It Works ── */}
           <section className="py-8 md:py-10 px-4">
             <div className="max-w-5xl mx-auto">
@@ -281,16 +305,17 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
                           ⭐ Most Popular · Gold
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + <span className="text-[#fce4a6]">Wedding Photography</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">Capture every beautiful wedding moment from two unforgettable perspectives — the robot and your dedicated photographer.</p>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth + <span className="text-[#fce4a6]">Second Booth</span></h3>
+                      <p className="text-white/60 text-xs text-center mb-6">Pair the roaming robot with a second photo experience — double the keepsakes, double the fun for your guests.</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
-                          'Robot Photobooth visiting every table throughout the reception',
-                          'Professional wedding photographer covering your day',
-                          'First dance, speeches & key moments captured',
-                          'Candid couple and guest photography all evening',
-                          'Professionally edited full gallery delivered post-wedding',
-                          'Custom couple overlay designed to match your wedding aesthetic',
+                          'Robot Photobooth visiting every table at your reception',
+                          L('Add-on: Premium Photobooth, Aerial Booth, or 360 Booth'),
+                          'Two photo experiences running throughout your reception',
+                          'Custom couple overlay designed around your wedding aesthetic',
+                          'Physical prints with your names & wedding date',
+                          'Dedicated on-site attendant managing both experiences',
+                          'Instant digital delivery to every guest',
                         ].map((b, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <FiCheck className="w-4 h-4 text-[#fce4a6] mt-0.5 flex-shrink-0" />
@@ -357,6 +382,10 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
           {/* ── Gallery pair 1 ── */}
           <section className="px-4 py-6 md:py-8">
             <div className="max-w-5xl mx-auto">
+              <Reveal className="text-center mb-5">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Wedding <span className="text-[#fce4a6]">Gallery</span></h2>
+                <p className="text-white/50 text-xs md:text-sm">Real couples. Real receptions. Real memories.</p>
+              </Reveal>
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <Reveal>
                   <div className="rounded-2xl overflow-hidden border border-white/10">
@@ -567,7 +596,7 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
               {packageType === 'gold' && (
                 <div className="bg-[#fce4a6] rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">⭐ Gold Package Selected</span>
-                  <span className="text-black/60 text-[10px]">Robot Photobooth + Wedding Photography</span>
+                  <span className="text-black/60 text-[10px]">Robot Photobooth + Second Booth</span>
                 </div>
               )}
               {packageType === 'platinum' && (
@@ -579,6 +608,7 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
               <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">
                 {packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Get a Wedding Quote'}
               </h2>
+
               <p className="text-black/60 text-xs md:text-sm mb-4 text-center">Tell us your wedding date and we&apos;ll confirm availability within 15 minutes.</p>
               {success ? (
                 <div className="text-green-600 text-center font-bold py-6">Thank you! We&apos;ll be in touch soon.</div>
@@ -681,6 +711,19 @@ const companyLogos = [
   '/images/geotab.png', '/images/hilton.png', '/images/infosys.png', '/images/meta.png',
   '/images/pdsb.png', '/images/remax.png', '/images/ritz.webp', '/images/rlp.svg',
   '/images/stonex.png', '/images/talent.png', '/images/td.png', '/images/torontopearson.png', '/images/BMO.svg.png',
+]
+
+const weddingEventTypes = [
+  { emoji: '💒', label: 'Reception' },
+  { emoji: '⛪', label: 'Ceremony' },
+  { emoji: '🥂', label: 'Cocktail Hour' },
+  { emoji: '👰', label: 'First Dance' },
+  { emoji: '💍', label: 'South Asian Weddings' },
+  { emoji: '🌸', label: 'Garden & Outdoor' },
+  { emoji: '✨', label: 'Black Tie' },
+  { emoji: '🎉', label: 'Sangeet & Mehndi' },
+  { emoji: '🏛️', label: 'Ballroom' },
+  { emoji: '💐', label: 'Intimate Celebrations' },
 ]
 
 const chicagoCompanyLogos = [
