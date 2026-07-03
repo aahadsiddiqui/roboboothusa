@@ -90,11 +90,11 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
   return (
     <>
       <Head>
-        <title>Birthday Robot Photobooth Texas | Robo Booth</title>
-        <meta name="description" content={`Texas's first robot photobooth for birthday parties. From 1st birthdays to milestone celebrations — personalized overlays, table visits, and instant prints. ${TEXAS_SERVICE_AREA}.`} />
-        <meta name="keywords" content="birthday photobooth Texas, robot photobooth birthday Austin Dallas Houston, kids birthday photo booth Texas, milestone birthday photobooth" />
-        <meta property="og:title" content="Birthday Robot Photobooth | Robo Booth Texas" />
-        <meta property="og:description" content="The roaming robot photobooth that makes every Texas birthday unforgettable. Custom themes, personalized prints, and white-glove service." />
+        <title>Birthday & Quinceañera Robot Photobooth Texas | Robo Booth</title>
+        <meta name="description" content={`Texas's first robot photobooth for birthday parties and quinceañeras. From 1st birthdays to Sweet 16s and quince celebrations — personalized overlays, table visits, and instant prints. ${TEXAS_SERVICE_AREA}.`} />
+        <meta name="keywords" content="birthday photobooth Texas, quinceañera photobooth Texas, robot photobooth birthday Austin Dallas Houston, quinceañera photo booth, kids birthday photo booth Texas" />
+        <meta property="og:title" content="Birthday & Quinceañera Robot Photobooth | Robo Booth Texas" />
+        <meta property="og:description" content="The roaming robot photobooth that makes every Texas birthday and quinceañera unforgettable. Custom themes, personalized prints, and white-glove service." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://roboboothusa.com${publicPath}`} />
         <link rel="canonical" href={`https://roboboothusa.com${publicPath}`} />
@@ -111,7 +111,7 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
             <div className="fixed top-16 md:top-[4.5rem] left-0 right-0 z-40 bg-[#fce4a6] text-black text-center py-2 px-4">
               <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold">
                 <FiClock className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>Weekend birthday dates fill fast — <button onClick={openQuote} className="underline font-bold">check availability now</button></span>
+                <span>Weekend birthday &amp; quinceañera dates fill fast — <button onClick={openQuote} className="underline font-bold">check availability now</button></span>
                 <button onClick={() => setUrgencyDismissed(true)} className="ml-2 text-black/50 hover:text-black"><FiX className="w-3.5 h-3.5" /></button>
               </div>
             </div>
@@ -130,11 +130,11 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
                   </div>
                   <h1 className="text-[1.65rem] leading-[1.15] md:text-4xl lg:text-5xl font-black md:leading-[1.1] mb-4">
                     {firstRobotBrandPhrase(market)}{' '}
-                    <span className="text-[#fce4a6]">Robot Photobooth</span> for Birthday Parties
+                    <span className="text-[#fce4a6]">Robot Photobooth</span> for Birthdays &amp; Quinceañeras
                   </h1>
                   <p className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed mb-5 max-w-xl">
                     Our robot photobooth roams your party, visits every table, delivers personalized photos to every guest&apos;s phone in real-time, and prints physical keepsakes on the spot.{' '}
-                    <span className="text-white font-semibold">From 1st birthdays to milestone celebrations — we handle everything so you can enjoy the party.</span>
+                    <span className="text-white font-semibold">From 1st birthdays and quinceañeras to milestone celebrations — we handle everything so you can enjoy the party.</span>
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-3">
                     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
@@ -172,7 +172,7 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
           {/* ── Milestone Marquee ── */}
           <section className="py-4 md:py-6 border-y border-[#fce4a6]/10 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 mb-3">
-              <p className="text-center text-[#fce4a6]/60 text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase">Celebrating every birthday {texasAcrossPhrase}</p>
+              <p className="text-center text-[#fce4a6]/60 text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase">Birthdays, quinceañeras &amp; celebrations {texasAcrossPhrase}</p>
             </div>
             <div className="relative w-full overflow-hidden">
               <div className="animate-marquee flex items-center gap-8 md:gap-12 px-4">
@@ -224,7 +224,7 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-2">Choose Your <span className="text-[#fce4a6]">Package</span></h2>
-                <p className="text-white/50 text-sm md:text-base">Every birthday is different — pick the package that fits yours.</p>
+                <p className="text-white/50 text-sm md:text-base">Every birthday and quinceañera is different — pick the package that fits yours.</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-stretch">
 
@@ -380,7 +380,7 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Built Around <span className="text-[#fce4a6]">Your Celebration</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Every detail of the experience can be tailored to your birthday theme</p>
+                <p className="text-white/50 text-xs md:text-sm">Every detail of the experience can be tailored to your birthday or quinceañera theme</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {customizations.map((item, i) => (
@@ -466,10 +466,10 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
           <section className="py-10 md:py-14 px-4 border-t border-white/5">
             <Reveal className="max-w-3xl mx-auto text-center">
               <h2 className="text-xl md:text-2xl lg:text-4xl font-black mb-2 md:mb-3">
-                Make Their Birthday <span className="text-[#fce4a6]">Unforgettable.</span>
+                Make Their Celebration <span className="text-[#fce4a6]">Unforgettable.</span>
               </h2>
               <p className="text-white/60 text-xs md:text-sm lg:text-base mb-5 max-w-lg mx-auto">
-                Join hundreds of Texas families who trust Robo Booth to elevate their birthday celebrations. Personalized, fun, and fully managed — we handle everything.
+                Join hundreds of Texas families who trust Robo Booth to elevate their birthday parties, quinceañeras, and milestone celebrations. Personalized, fun, and fully managed — we handle everything.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
@@ -576,6 +576,7 @@ export default function Birthday(_props: InferGetServerSidePropsType<typeof getS
 /* ─── DATA ─── */
 const milestones = [
   { emoji: '🎂', label: '1st Birthdays' },
+  { emoji: '💃', label: 'Quinceañeras' },
   { emoji: '🎈', label: 'Sweet 16' },
   { emoji: '🎉', label: '18th Celebrations' },
   { emoji: '🥳', label: '21st Parties' },
@@ -587,7 +588,7 @@ const milestones = [
 ]
 
 const howItWorks = [
-  { title: 'You Book', desc: 'Tell us the birthday date, venue, theme, and guest count. We confirm availability fast and design a custom activation around the celebration.' },
+  { title: 'You Book', desc: 'Tell us your party date, venue, theme, and guest count — whether it\'s a birthday, quinceañera, or milestone celebration. We confirm availability fast and design a custom activation around your event.' },
   { title: 'We Show Up', desc: 'Our team arrives early, sets up the fully themed robot (no power or WiFi needed), and handles every detail on-site. Zero work for you.' },
   { title: 'Every Guest Gets a Memory', desc: 'The robot roams your party, visits every table, captures personalized photos, and delivers them instantly to every guest\'s phone — plus prints on the spot.' },
 ]
@@ -599,12 +600,12 @@ const whyClientsLove = [
   { icon: <FiGift className="w-5 h-5 md:w-6 md:h-6" />, title: 'Keepsake Prints', desc: 'Every guest walks away with a physical print in hand — a personalized souvenir they\'ll put on the fridge, not bury in a camera roll.' },
   { icon: <FiZap className="w-5 h-5 md:w-6 md:h-6" />, title: 'Zero Setup Burden', desc: 'No power outlets, no WiFi, no special venue requirements. Our team handles full setup and teardown — invisible to your party planning.' },
   { icon: <FiShare2 className="w-5 h-5 md:w-6 md:h-6" />, title: 'Instant Digital Sharing', desc: 'Photos delivered to every guest\'s phone via QR code, AirDrop, SMS, or email — shareable moments before the cake is even cut.' },
-  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Themed Experience', desc: 'Custom overlays with name, age, and theme — Winnie the Pooh, princess, casino, racing cars, and more. Every print celebrates the honoree.' },
+  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Themed Experience', desc: 'Custom overlays with name, age, and theme — Winnie the Pooh, princess, quinceañera rose gold, casino, racing cars, and more. Every print celebrates the honoree.' },
   { icon: <FiShield className="w-5 h-5 md:w-6 md:h-6" />, title: 'White-Glove Service', desc: 'A dedicated on-site attendant manages everything. You focus on the party — we handle the tech from start to finish.' },
 ]
 
 const customizations = [
-  { icon: <FiImage className="w-5 h-5" />, title: 'Themed Overlays & Branding', desc: 'Every photo features the honoree\'s name, age, and your party theme — from Winnie the Pooh to princess, casino, or racing cars. Custom graphics, colors, and decorative elements on every print.' },
+  { icon: <FiImage className="w-5 h-5" />, title: 'Themed Overlays & Branding', desc: 'Every photo features the honoree\'s name, age, and your party theme — from Winnie the Pooh to princess, quinceañera rose gold, casino, or racing cars. Custom graphics, colors, and decorative elements on every print.' },
   { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with birthday greetings — record a message from the honoree, their parents, or a loved one. The robot delivers it at every table for a personal touch guests never forget.' },
   { icon: <FiHeart className="w-5 h-5" />, title: 'Any Venue, Any Size', desc: 'Banquet halls, backyard parties, restaurant private rooms, hotel ballrooms — we\'ve done them all. The robot adapts to your space and guest count seamlessly.' },
 ]
@@ -617,10 +618,10 @@ const testimonials = [
 
 const faqs = [
   { question: 'How big is the Robot Photobooth?', answer: 'The robot stands at 5ft 4in tall — roughly the same height and footprint as a person. It doesn\'t require any dedicated space or booth setup, so it roams freely through your venue without disrupting your party layout.' },
-  { question: 'Is this suitable for kids\' birthday parties?', answer: 'Absolutely. Our operators are experienced with mixed-age groups including young children. The robot moves slowly and carefully, and our team manages interactions to ensure every guest — from toddlers to teens — has a safe, joyful experience.' },
-  { question: 'Can the photos match our birthday theme?', answer: 'Yes. Every photo comes with a custom overlay featuring the honoree\'s name, age, date, and your party theme. We\'ve done Winnie the Pooh, princess, casino, racing cars, balloon themes, and everything in between.' },
+  { question: 'Is this suitable for kids\' birthday parties and quinceañeras?', answer: 'Absolutely. Our operators are experienced with mixed-age groups including young children and quinceañera celebrations. The robot moves slowly and carefully, and our team manages interactions to ensure every guest — from toddlers to teens — has a safe, joyful experience.' },
+  { question: 'Can the photos match our birthday or quinceañera theme?', answer: 'Yes. Every photo comes with a custom overlay featuring the honoree\'s name, age, date, and your party theme. We\'ve done Winnie the Pooh, princess, quinceañera rose gold, casino, racing cars, balloon themes, and everything in between.' },
   { question: 'Does the setup require WiFi or power from the venue?', answer: 'No. The robot runs on battery and uses its own connectivity. No cables, no venue WiFi, no special requirements. We handle everything independently.' },
   { question: 'How are photos shared with guests?', answer: 'Instantly via QR code, AirDrop, SMS, or email — all right at the party. Guests receive their personalized photo within seconds of it being taken, plus a physical print to take home.' },
   { question: 'Is an attendant included?', answer: 'Yes. Every birthday booking includes a dedicated on-site attendant who manages the robot, visits every table, guides guests, and ensures a flawless experience from arrival to teardown.' },
-  { question: 'How far in advance should we book?', answer: 'We recommend booking at least 4–6 weeks in advance for birthday parties. Weekend dates — especially during peak season — fill up quickly. Contact us now to check availability for your date.' },
+  { question: 'How far in advance should we book?', answer: 'We recommend booking at least 4–6 weeks in advance for birthday parties and quinceañeras. Weekend dates — especially during peak season — fill up quickly. Contact us now to check availability for your date.' },
 ]
