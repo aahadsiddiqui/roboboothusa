@@ -37,3 +37,8 @@ export function featuredBrandActivationsHref(market: MarketConfig): string {
 export function featuredWeddingHref(market: MarketConfig): string {
   return market.id === 'national' ? '/wedding' : `${market.basePath}/wedding`
 }
+
+export function featuredBirthdayHref(market: MarketConfig): string | null {
+  if (market.id !== 'texas') return null
+  return '/texas/birthday'
+}

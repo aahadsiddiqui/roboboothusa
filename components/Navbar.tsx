@@ -7,7 +7,7 @@ import type { ProductData } from '../data/products'
 import { productsForMarket } from '../lib/marketProducts'
 import { eventTypes } from '../data/events'
 import { getMarketForPath } from '../data/markets'
-import { eventTypeHref, featuredBrandActivationsHref, featuredCorporateHref, featuredWeddingHref } from '../lib/eventRoutes'
+import { eventTypeHref, featuredBrandActivationsHref, featuredBirthdayHref, featuredCorporateHref, featuredWeddingHref } from '../lib/eventRoutes'
 import { regionalProductHref } from '../lib/regionalLinks'
 
 export default function Navbar() {
@@ -24,12 +24,20 @@ export default function Navbar() {
     { name: 'Corporate', href: featuredCorporateHref(market), emoji: '🏢' },
     { name: 'Brand Activations', href: featuredBrandActivationsHref(market), emoji: '🚀' },
     { name: 'Wedding', href: featuredWeddingHref(market), emoji: '👫' },
+    ...(featuredBirthdayHref(market)
+      ? [{ name: 'Birthday', href: featuredBirthdayHref(market)!, emoji: '🎂' }]
+      : []),
   ]
 
   const productHref = (p: ProductData) => regionalProductHref(market, p)
 
   const navProducts = productsForMarket(market)
 
+  const navEventTypes = eventTypes.filter((e) => {
+    if (e.slug === 'weddings') return false
+    if (market.id === 'texas' && e.slug === 'milestone-celebrations') return false
+    return true
+  })
   const [productsOpen, setProductsOpen] = useState(false)
   const [eventsOpen, setEventsOpen] = useState(false)
   const [statesOpen, setStatesOpen] = useState(false)
@@ -155,7 +163,7 @@ export default function Navbar() {
                       ))}
                       <div className="border-t border-white/10 mt-1 pt-1">
                         <p className="px-4 pt-1 pb-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[#fce4a6]/50">All Event Types</p>
-                        {eventTypes.filter(e => e.slug !== 'weddings').map((event) => (
+                        {navEventTypes.map((event) => (
                           <Link
                             key={event.slug}
                             href={eventTypeHref(market, event.slug)}
@@ -311,7 +319,7 @@ export default function Navbar() {
               </div>
               <p className="text-[#fce4a6]/60 text-[10px] uppercase tracking-[0.2em] font-semibold mb-2">All Event Types</p>
               <div className="space-y-0.5 mb-8">
-                {eventTypes.filter(e => e.slug !== 'weddings').map((event, i) => (
+                {navEventTypes.map((event, i) => (
                   <motion.div key={event.slug} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + i * 0.03 }}>
                     <Link
                       href={eventTypeHref(market, event.slug)}

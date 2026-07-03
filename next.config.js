@@ -20,11 +20,17 @@ const regionalEventRewrites = (region) =>
     destination: `/events/${seg}`,
   }))
 
-const regionalFeaturedRewrites = (region) => [
-  { source: `/${region}/corporate`, destination: '/corporate' },
-  { source: `/${region}/brand-activations`, destination: '/brand-activations' },
-  { source: `/${region}/wedding`, destination: '/wedding' },
-]
+const regionalFeaturedRewrites = (region) => {
+  const rewrites = [
+    { source: `/${region}/corporate`, destination: '/corporate' },
+    { source: `/${region}/brand-activations`, destination: '/brand-activations' },
+    { source: `/${region}/wedding`, destination: '/wedding' },
+  ]
+  if (region === 'texas') {
+    rewrites.push({ source: '/texas/birthday', destination: '/birthday' })
+  }
+  return rewrites
+}
 
 const REGIONS = ['chicago', 'texas']
 
@@ -59,7 +65,14 @@ const nextConfig = {
         permanent: true,
       })),
     )
-    return [...eventOldToNew, ...productOldToNew]
+    const milestoneRedirects = [
+      {
+        source: '/texas/events/milestone-celebration',
+        destination: '/texas/birthday',
+        permanent: true,
+      },
+    ]
+    return [...eventOldToNew, ...productOldToNew, ...milestoneRedirects]
   },
   images: {
     domains: ['localhost'],

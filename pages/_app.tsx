@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [router.asPath])
 
   // Pages where footer should be hidden
-  const hideFooter = ['/corporate', '/wedding'].includes(router.pathname)
+  const hideFooter = ['/corporate', '/wedding', '/birthday'].includes(router.pathname)
 
   return (
     <>
