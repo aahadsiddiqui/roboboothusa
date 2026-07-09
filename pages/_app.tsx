@@ -7,6 +7,7 @@ import type { AppProps } from 'next/app'
 import Footer from '../components/Footer'
 import TexasGoogleAdsTag from '../components/TexasGoogleAdsTag'
 import TexasMetaPixel from '../components/TexasMetaPixel'
+import ChicagoMetaPixel from '../components/ChicagoMetaPixel'
 import { storeUtmParams } from '../lib/utmParams'
 
 import { useRouter } from 'next/router'
@@ -29,6 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <TexasGoogleAdsTag />
       <TexasMetaPixel />
+      <ChicagoMetaPixel />
       <main>
         <Component {...pageProps} />
       </main>
