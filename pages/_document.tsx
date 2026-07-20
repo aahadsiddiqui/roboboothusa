@@ -7,16 +7,7 @@ export default function Document() {
       <Head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#000000" />
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-2S593P23DG"></script>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-2S593P23DG');
-          `,
-        }} />
+
         {/* Microsoft Clarity */}
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -55,4 +46,4 @@ export default function Document() {
       </body>
     </Html>
   )
-} 
+}

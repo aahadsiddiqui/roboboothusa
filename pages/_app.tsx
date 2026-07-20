@@ -8,6 +8,7 @@ import Footer from '../components/Footer'
 import TexasGoogleAdsTag from '../components/TexasGoogleAdsTag'
 import TexasMetaPixel from '../components/TexasMetaPixel'
 import ChicagoMetaPixel from '../components/ChicagoMetaPixel'
+import GlobalGoogleTags from '../components/GlobalGoogleTags'
 import { storeUtmParams } from '../lib/utmParams'
 
 import { useRouter } from 'next/router'
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      <GlobalGoogleTags />
       <TexasGoogleAdsTag />
       <TexasMetaPixel />
       <ChicagoMetaPixel />
