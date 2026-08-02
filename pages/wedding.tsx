@@ -9,6 +9,7 @@ import {
 import Navbar from '../components/Navbar'
 import { appendUtmParams } from '../lib/utmParams'
 import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
+import { trackChicagoFormSubmit } from '../lib/trackChicagoFormSubmit'
 import { getMarketForPath } from '../data/markets'
 import { getRegionalLandingSsp } from '../lib/regionalLandingSsp'
 import { localizeMarketingCopy, weddingHeroRatingLine, weddingMarqueeLine } from '../lib/marketBranding'
@@ -85,7 +86,7 @@ export default function Wedding({ browserPath }: InferGetServerSidePropsType<typ
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true); trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
+      if (res.ok) { setSuccess(true); if (market.id === 'chicago') trackChicagoFormSubmit(); else trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
 

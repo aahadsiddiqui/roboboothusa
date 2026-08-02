@@ -46,6 +46,8 @@ const nextConfig = {
         ...regionalEventRewrites('texas'),
         ...regionalFeaturedRewrites('chicago'),
         ...regionalFeaturedRewrites('texas'),
+        // Chicago-only ad funnel (no Texas equivalent).
+        { source: '/chicago/corporate-events', destination: '/corporate-events' },
       ],
     }
   },

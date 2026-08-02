@@ -1,32 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import type { InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  FiArrowRight,
-  FiCheck,
-  FiPhone,
-  FiChevronDown,
-  FiChevronUp,
-  FiClock,
-  FiX,
-  FiZap,
-  FiImage,
-  FiUsers,
-  FiStar,
-  FiShield,
-  FiShare2,
-  FiSend,
-  FiAward,
-  FiCamera,
-} from 'react-icons/fi'
-import Navbar from '../components/Navbar'
-import { useLandingMarket } from '../hooks/useLandingMarket'
-import { landingCanonical } from '../lib/landingSeo'
-import { getLandingTrustedLine } from '../lib/productLocalize'
+import { FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiClock, FiX, FiZap, FiUsers, FiStar, FiShield, FiImage, FiShare2 } from 'react-icons/fi'
 import { appendUtmParams } from '../lib/utmParams'
-import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
 import { trackChicagoFormSubmit } from '../lib/trackChicagoFormSubmit'
-import { TEXAS_SERVICE_AREA, texasServingLine } from '../lib/texasServiceArea'
+import { getMarketForPath } from '../data/markets'
+import { getRegionalLandingSsp } from '../lib/regionalLandingSsp'
+import {
+  corporateHeroRatingLine,
+  firstRobotBrandPhrase,
+  localizeMarketingCopy,
+  trustedCompaniesMarqueeLine,
+} from '../lib/marketBranding'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -35,7 +21,7 @@ const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode;
   </motion.div>
 )
 
-/* ─── CTA Block (reused between sections) ─── */
+/* ─── Subtle CTA ─── */
 const SubtleCTA = ({ label, onQuote }: { label: string; onQuote: () => void }) => (
   <div className="flex justify-center pt-4 pb-2">
     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={onQuote}
@@ -46,18 +32,21 @@ const SubtleCTA = ({ label, onQuote }: { label: string; onQuote: () => void }) =
 )
 
 /* ════════════════════════════════════════════════════════════════
-   AI BOOTH — Custom Landing Page
+   CORPORATE EVENTS — dedicated Chicago ad funnel (locked-down, no site nav)
+   Public URL: /chicago/corporate-events (rewrites to /corporate-events).
+   noindex; the single quote form is the only tracked form (Chicago form_submit).
    ════════════════════════════════════════════════════════════════ */
-export default function AiBoothPage() {
-  const market = useLandingMarket()
-  const { canonical, ogUrl } = landingCanonical(market, '/ai-booth', 'ai-booth')
-  const trustedLine = getLandingTrustedLine(market)
-  const showRegionalContact = market.id !== 'national'
+export const getServerSideProps = getRegionalLandingSsp('/corporate-events')
 
-  const regionLabel = market.id === 'chicago' ? 'Chicago' : market.id === 'texas' ? 'Texas' : 'USA'
-  const regionArea = market.id === 'chicago' ? 'Chicago & surrounding areas' : market.id === 'texas' ? TEXAS_SERVICE_AREA : 'the USA'
-  const finalCtaArea = market.id === 'chicago' ? 'Chicago' : market.id === 'texas' ? 'Texas' : 'the USA'
-
+export default function CorporateEvents({ browserPath }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const market = useMemo(() => getMarketForPath(browserPath), [browserPath])
+  const publicPath = useMemo(
+    () => (market.id === 'national' ? '/corporate-events' : `${market.basePath}/corporate-events`),
+    [market.basePath, market.id],
+  )
+  const L = useCallback((s: string) => localizeMarketingCopy(s, market), [market])
+  const customizationItems = market.id === 'texas' ? texasCustomizations : chicagoCustomizations
+  const isTexas = market.id === 'texas'
   const [showModal, setShowModal] = useState(false)
   const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
   const [form, setForm] = useState({ firstName: '', email: '', phone: '', eventDate: '', budget: '' })
@@ -75,6 +64,13 @@ export default function AiBoothPage() {
 
   useEffect(() => { const t = setTimeout(() => setShowModal(true), 25000); return () => clearTimeout(t) }, [])
   useEffect(() => { showModal ? document.body.classList.add('overflow-hidden') : document.body.classList.remove('overflow-hidden'); return () => document.body.classList.remove('overflow-hidden') }, [showModal])
+  useEffect(() => {
+    const handlePlay = (e: Event) => {
+      document.querySelectorAll('video').forEach(v => { if (v !== e.target) { v.pause() } })
+    }
+    document.addEventListener('play', handlePlay, true)
+    return () => document.removeEventListener('play', handlePlay, true)
+  }, [])
 
   const openQuote = useCallback(() => { setPackageType(''); setShowModal(true) }, [])
   const openBronzePackage = useCallback(() => { setPackageType('bronze'); setShowModal(true) }, [])
@@ -89,85 +85,69 @@ export default function AiBoothPage() {
     try {
       const fd = new FormData()
       fd.append('first-name', form.firstName); fd.append('phone-number', form.phone); fd.append('email', form.email)
-      fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', 'AI Booth')
-      fd.append(
-        'package',
-        packageType === 'gold'
-          ? 'Gold Package (AI Booth + Robot Photobooth)'
-          : packageType === 'platinum'
-            ? 'Platinum Package (AI Booth + Robot Photobooth + Event Photography)'
-            : packageType === 'bronze'
-              ? 'Bronze Package (AI Booth via Premium Photobooth)'
-              : 'General Inquiry',
-      )
+      fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', 'Corporate Event')
+      fd.append('package', packageType === 'gold' ? (isTexas ? 'Gold Package (Corporate Robot + 360 Booth)' : 'Gold Package (Corporate Robot + Event Photography)') : packageType === 'platinum' ? (isTexas ? 'Platinum Package (Corporate Robot + Second Robot + 360 Booth)' : 'Platinum Package (Corporate Robot + Event Photography + Second Booth)') : packageType === 'bronze' ? 'Bronze Package (Corporate Robot Only)' : 'General Inquiry')
       fd.append('_replyto', form.email)
-      fd.append('source', market.id === 'national' ? 'AI Booth Page' : `AI Booth Page (${market.analyticsRegion})`)
+      fd.append('source', market.id === 'national' ? 'Corporate Events Funnel' : `Corporate Events Funnel (${market.analyticsRegion})`)
       fd.append('intake-market', market.id)
       appendUtmParams(fd)
       const res = await fetch(market.contactFormPostUrl, { method: 'POST', body: fd, headers: { Accept: 'application/json' } })
-      if (res.ok) { setSuccess(true); if (market.id === 'chicago') trackChicagoFormSubmit(); else trackTexasMetaLead(market.id) } else { alert('Failed to submit. Please try again.') }
+      // Chicago-only funnel: fire the deduped `form_submit` on verified success only. No Lead event.
+      if (res.ok) { setSuccess(true); if (market.id === 'chicago') trackChicagoFormSubmit() } else { alert('Failed to submit. Please try again.') }
     } catch { alert('Failed to submit. Please try again.') } finally { setSubmitting(false) }
   }
-
-  const contactHref = showRegionalContact ? market.phoneTel : market.contactPath
-  const contactLabel = showRegionalContact ? `Call ${market.phoneDisplay}` : 'Contact Us'
 
   return (
     <>
       <Head>
-        <title>
-          {market.id === 'national'
-            ? 'AI Booth Rental Chicago USA | AI Photo Experience | Robo Booth'
-            : `AI Booth | Robo Booth ${market.analyticsRegion}`}
-        </title>
+        <title>{L('Corporate Event Robot Photobooth Chicago USA | Robo Booth')}</title>
         <meta
           name="description"
-          content={
-            market.id === 'chicago'
-              ? "Chicago's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly. Serving Chicago & surrounding areas."
-              : market.id === 'texas'
-                ? `Texas's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly. ${texasServingLine}.`
-                : "Chicago's AI Booth transforms guest photos into cinematic, editorial, or animated masterpieces — delivered instantly to every guest's phone. Weddings, corporate events, and brand activations across the USA."
-          }
+          content={L(
+            "USA's first robot photobooth for corporate events. Automated, branded, and fully managed. Serving Chicago & USA. Check availability now.",
+          )}
         />
-        <meta name="keywords" content="AI photo booth rental, AI booth Chicago, cinematic photo booth, AI transformed photos, wedding AI booth, corporate AI activation, robot photobooth AI" />
-        <meta
-          property="og:title"
-          content={market.id === 'national' ? 'AI Booth Rental Chicago USA | Robo Booth' : `AI Booth | Robo Booth ${market.analyticsRegion}`}
-        />
-        <meta
-          property="og:description"
-          content={
-            market.id === 'national'
-              ? 'Turn every guest into a cinematic icon with AI-transformed photos. Instant delivery. Chicago & USA.'
-              : 'Turn every guest into a cinematic icon with AI-transformed photos delivered instantly.'
-          }
-        />
+        <meta name="keywords" content="corporate event photobooth Chicago, robot photobooth corporate, branded photo booth USA, corporate event activation Chicago" />
+        <meta property="og:title" content="Corporate Robot Photobooth | Robo Booth" />
+        <meta property="og:description" content="The automated, branded event activation trusted by Chicago's top companies. White-glove service — we handle everything." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={ogUrl} />
-        <link rel="canonical" href={canonical} />
-        <link rel="preload" href="/images/aibooth1.png" as="image" />
+        <meta property="og:url" content={`https://roboboothusa.com${publicPath}`} />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="preload" href="/images/robotbell.jpg" as="image" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
       <div className={showModal ? 'blur-sm pointer-events-none select-none' : ''}>
         <div className="min-h-screen bg-black text-white overflow-x-hidden">
 
-          <Navbar />
+          {/* ── Locked-down funnel top bar: logo only (non-clickable), tel CTA allowed ── */}
+          <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+            <div className="max-w-7xl mx-auto px-4 h-16 md:h-[4.5rem] flex items-center justify-between">
+              <img src="/images/1.png" alt="Robo Booth logo" className="h-10 md:h-12 w-auto object-contain" />
+              <a
+                href={market.phoneTel}
+                className="inline-flex items-center gap-1.5 bg-[#fce4a6] text-black px-4 py-2 rounded-full font-semibold text-sm hover:bg-white transition-colors"
+              >
+                <FiPhone className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="hidden sm:inline">{market.phoneDisplay}</span>
+                <span className="sm:hidden">Call Now</span>
+              </a>
+            </div>
+          </div>
 
           {/* ── Urgency Banner ── */}
           {!urgencyDismissed && (
             <div className="fixed top-16 md:top-[4.5rem] left-0 right-0 z-40 bg-[#fce4a6] text-black text-center py-2 px-4">
               <div className="flex items-center justify-center gap-2 text-xs md:text-sm font-semibold">
                 <FiClock className="w-3.5 h-3.5 flex-shrink-0" />
-                <span>Peak event dates are filling fast — <button onClick={openQuote} className="underline font-bold">check your date now</button></span>
+                <span>Corporate dates are filling fast — <button onClick={openQuote} className="underline font-bold">check availability now</button></span>
                 <button onClick={() => setUrgencyDismissed(true)} className="ml-2 text-black/50 hover:text-black"><FiX className="w-3.5 h-3.5" /></button>
               </div>
             </div>
           )}
 
           {/* ═══════════════════════════════════════
-              HERO — Two images side by side on desktop
+              HERO
              ═══════════════════════════════════════ */}
           <section className={`relative ${urgencyDismissed ? 'pt-20 md:pt-24' : 'pt-[7rem] md:pt-[8rem]'} pb-6 md:pb-8 px-4`}>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_#fce4a620_0%,_transparent_50%)] pointer-events-none" />
@@ -176,50 +156,55 @@ export default function AiBoothPage() {
                 <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="flex text-yellow-400 text-sm">★★★★★</div>
-                    <span className="text-white/60 text-xs font-medium">
-                      5.0 Rating · {regionLabel}&apos;s Most Unique Photo Experience
-                    </span>
+                    <span className="text-white/60 text-xs font-medium">{corporateHeroRatingLine(market)}</span>
                   </div>
                   <h1 className="text-[1.65rem] leading-[1.15] md:text-4xl lg:text-5xl font-black md:leading-[1.1] mb-4">
-                    The AI Booth That Turns Every Guest Into a{' '}
-                    <span className="text-[#fce4a6]">Cinematic Icon.</span>
+                    {firstRobotBrandPhrase(market)}{' '}
+                    <span className="text-[#fce4a6]">Robot Photobooth</span> for Corporate Events
                   </h1>
                   <p className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed mb-5 max-w-xl">
-                    Our AI Booth uses your photo — taken with our Premium Photobooth or Robot Photobooth — and transforms it into a stunning cinematic, editorial, or animated masterpiece. Delivered instantly to every guest&apos;s phone.{' '}
-                    <span className="text-white font-semibold">The photo experience everyone will be talking about.</span>
+                    {market.id === 'texas' ? (
+                      <>
+                        Our robot photobooth roams your event, drives organic social sharing, captures compliance-ready consumer leads, and delivers branded content to every guest&apos;s phone in real-time.{' '}
+                        <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
+                      </>
+                    ) : (
+                      <>
+                        Our robot photobooth roams your event, engages your team, delivers branded content to every guest&apos;s phone in real-time, and prints physical keepsakes on the spot.{' '}
+                        <span className="text-white font-semibold">White-glove service — we handle the tech, you take the credit.</span>
+                      </>
+                    )}
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-3">
                     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
                       className="w-full sm:w-auto bg-[#fce4a6] text-black px-6 py-3.5 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group text-center">
-                      Reserve Your Date <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
+                      Check Availability <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                     </motion.button>
-                    <a href={contactHref} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
-                      <FiPhone className="w-4 h-4" /> {contactLabel}
+                    <a href={market.phoneTel} className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#fce4a6]/40 text-[#fce4a6] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fce4a6]/10 transition-all text-center">
+                      <FiPhone className="w-4 h-4" /> Contact Us
                     </a>
                   </div>
-                  <p className="text-white/40 text-[11px] md:text-xs">
-                    Responses in &lt;15 mins&ensp;|&ensp;No credit card required
-                    {showRegionalContact && (
-                      <>
-                        {' '}|{' '}
-                        <a href={`mailto:${market.intakeEmail}`} className="underline hover:text-white/60">
-                          {market.intakeEmail}
-                        </a>
-                      </>
-                    )}
-                  </p>
+                  <p className="text-white/40 text-[11px] md:text-xs">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
                 </motion.div>
 
-                {/* Hero images — desktop side by side */}
-                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:grid grid-cols-2 gap-3">
-                  <img src="/images/aibooth1.png" alt="AI Booth cinematic style" className="w-full h-[480px] lg:h-[520px] object-cover rounded-2xl shadow-2xl" loading="eager" fetchPriority="high" />
-                  <img src="/images/aibooth2.png" alt="AI Booth animated style" className="w-full h-[480px] lg:h-[520px] object-cover rounded-2xl shadow-2xl" loading="eager" />
+                {/* Hero video — desktop */}
+                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:block">
+                  <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
+                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
+                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
+                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    </video>
+                  </div>
                 </motion.div>
 
-                {/* Mobile hero */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden grid grid-cols-2 gap-2 -mx-1">
-                  <img src="/images/aibooth1.png" alt="AI Booth cinematic style" className="w-full h-44 object-cover rounded-xl" loading="eager" fetchPriority="high" />
-                  <img src="/images/aibooth2.png" alt="AI Booth animated style" className="w-full h-44 object-cover rounded-xl" loading="eager" />
+                {/* Mobile hero video */}
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden -mx-4">
+                  <div className="overflow-hidden bg-black">
+                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
+                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
+                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    </video>
+                  </div>
                 </motion.div>
               </div>
             </div>
@@ -228,7 +213,9 @@ export default function AiBoothPage() {
           {/* ── Logo Marquee ── */}
           <section className="py-4 md:py-6 border-y border-[#fce4a6]/10 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 mb-3">
-              <p className="text-center text-[#fce4a6]/60 text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase">{trustedLine}</p>
+              <p className="text-center text-[#fce4a6]/60 text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase">
+                {trustedCompaniesMarqueeLine(market)}
+              </p>
             </div>
             <div className="relative w-full overflow-hidden">
               <div className="animate-marquee flex items-center gap-10 md:gap-14 px-4">
@@ -246,7 +233,7 @@ export default function AiBoothPage() {
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">How It <span className="text-[#fce4a6]">Works</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Three steps to a photo your guests will never forget</p>
+                <p className="text-white/50 text-xs md:text-sm">Simple, fully managed, and stress-free for your team</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 {howItWorks.map((step, i) => (
@@ -262,38 +249,20 @@ export default function AiBoothPage() {
                   </Reveal>
                 ))}
               </div>
-            </div>
-          </section>
 
-          {/* ── Choose Your AI Style ── */}
-          <section className="py-8 md:py-10 px-4 border-t border-white/5">
-            <div className="max-w-6xl mx-auto">
-              <Reveal className="text-center mb-6">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Choose Your <span className="text-[#fce4a6]">AI Style</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Every style is fully customized to match your event theme</p>
-              </Reveal>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                {aiStyles.map((style, i) => (
-                  <Reveal key={i} delay={i * 0.06}>
-                    <div className="bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden hover:border-[#fce4a6]/30 transition-colors group h-full flex flex-col">
-                      <div className="aspect-[4/3] overflow-hidden">
-                        <img src={style.image} alt={style.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                      </div>
-                      <div className="p-4 md:p-5 flex-1">
-                        <h3 className="font-bold text-sm md:text-base text-white mb-1.5">{style.label}</h3>
-                        <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{style.desc}</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-              <Reveal delay={0.2} className="text-center mt-5">
-                <p className="text-white/40 text-xs md:text-sm">Fully custom styles available — themed exactly to your event. <button onClick={openQuote} className="text-[#fce4a6] underline font-semibold hover:text-white">Ask us.</button></p>
+              {/* How It Works video */}
+              <Reveal delay={0.2} className="mt-8">
+                <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10 bg-black">
+                  <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robottd.jpg" style={{ display: 'block' }}>
+                    <source src="/videos/bmorobot.MOV" type="video/quicktime" />
+                    <source src="/videos/bmorobot.MOV" type="video/mp4" />
+                  </video>
+                </div>
               </Reveal>
             </div>
           </section>
 
-          {/* ── Packages ── */}
+          {/* ── Packages: Bronze + Gold ── */}
           <section className="py-10 md:py-14 px-4">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-8">
@@ -310,15 +279,15 @@ export default function AiBoothPage() {
                         Bronze Package
                       </span>
                     </div>
-                    <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth via <span className="text-white/50">Premium Photobooth</span></h3>
-                    <p className="text-white/50 text-xs text-center mb-6">Guests step into our Premium Photobooth — AI transforms every photo into a styled masterpiece, delivered instantly.</p>
+                    <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot Photobooth <span className="text-white/50">Only</span></h3>
+                    <p className="text-white/50 text-xs text-center mb-6">The standalone corporate robot photobooth experience — fully set up, operated, and managed by our team.</p>
                     <div className="space-y-2.5 mb-8 flex-1">
                       {[
-                        'Premium Photobooth capturing studio-quality photos',
-                        'AI transformation into your chosen style theme',
-                        'Instant delivery to every guest\'s phone',
-                        'Custom branded overlays on every image',
-                        'On-site attendant managing the full experience',
+                        'Corporate Robot Photobooth roaming guest-to-guest',
+                        'Physical prints delivered on the spot',
+                        'Branded photo overlays with your company logo',
+                        'Dedicated on-site attendant handling everything',
+                        'Guests receive digital copies instantly to their phones',
                       ].map((b, i) => (
                         <div key={i} className="flex items-start gap-3">
                           <FiCheck className="w-4 h-4 text-white/40 mt-0.5 flex-shrink-0" />
@@ -346,16 +315,19 @@ export default function AiBoothPage() {
                           ⭐ Most Popular · Gold
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth + <span className="text-[#fce4a6]">Robot Photobooth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">Two activations, one unforgettable event — the roaming Robot captures the energy, while the AI Booth creates the keepsake.</p>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">
+                        Robot Photobooth +{' '}
+                        <span className="text-[#fce4a6]">{isTexas ? '360 Booth' : 'Event Photography'}</span>
+                      </h3>
+                      <p className="text-white/60 text-xs text-center mb-6">Capture every moment of your event from two unforgettable perspectives.</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
-                          'AI Booth via Premium Photobooth (styled masterpiece)',
-                          'Robot Photobooth roaming guest-to-guest',
-                          'AI transformation delivered to every guest instantly',
-                          'Custom style theme matching your event',
-                          'Branded overlays across both activations',
-                          'One team managing everything seamlessly',
+                          L("USA's First Robot Photobooth roaming guest-to-guest"),
+                          'Professional event photographer covering key moments',
+                          'Candid guest photography throughout the event',
+                          'Group photos and highlight moments captured',
+                          'Professionally edited high-resolution images delivered after the event',
+                          'Custom photo overlays and branded Robot Photobooth experience',
                         ].map((b, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <FiCheck className="w-4 h-4 text-[#fce4a6] mt-0.5 flex-shrink-0" />
@@ -384,16 +356,22 @@ export default function AiBoothPage() {
                           💎 Platinum Package
                         </span>
                       </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">AI Booth + Robot + <span className="text-white/80">Event Photography</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The complete event experience — AI-transformed keepsakes, a roaming robot, and full professional photography coverage.</p>
+                      <h3 className="text-lg md:text-xl font-black text-center mb-2">
+                        {isTexas ? (
+                          <>Robot Photobooth + <span className="text-white/80">Second Robot & 360 Booth</span></>
+                        ) : (
+                          <>Robot Photobooth + Photography + <span className="text-white/80">Second Booth</span></>
+                        )}
+                      </h3>
+                      <p className="text-white/60 text-xs text-center mb-6">{L('The ultimate corporate event experience — add a 360 Booth, Premium Photobooth, or Aerial Booth to your activation.')}</p>
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
-                          'Everything in Gold, plus:',
-                          'Professional event photographer covering key moments',
-                          'Candid guest photography throughout the event',
-                          'RAW + edited high-resolution images delivered within a week',
-                          `The most comprehensive event package in ${regionArea}`,
-                          'One seamless team handling every detail',
+                          'Everything included in the Gold Package',
+                          L('Add-on: 360 Booth, Premium Photobooth, or Aerial Booth'),
+                          'Two interactive booth activations running simultaneously',
+                          'Maximum guest engagement from multiple experiences',
+                          'One team coordinating everything seamlessly',
+                          L('The most talked-about corporate event setup in the USA'),
                         ].map((b, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <FiCheck className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
@@ -416,17 +394,29 @@ export default function AiBoothPage() {
             </div>
           </section>
 
-          <SubtleCTA label="Reserve Your Date" onQuote={openQuote} />
+          {/* ── CTA 1 ── */}
+          <SubtleCTA label="Check Availability" onQuote={openQuote} />
 
-          {/* ── Why Guests Love It ── */}
+          {/* ── Corporate Image ── */}
+          <section className="px-4 py-6 md:py-8">
+            <div className="max-w-5xl mx-auto">
+              <Reveal>
+                <div className="rounded-2xl overflow-hidden border border-white/10">
+                  <img src="/images/corporate1.JPG" alt="Corporate Robot Photobooth event" className="w-full h-auto object-cover max-h-[60vh]" loading="lazy" />
+                </div>
+              </Reveal>
+            </div>
+          </section>
+
+          {/* ── Why Clients Love It ── */}
           <section className="py-8 md:py-10 px-4 border-t border-white/5">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Why Guests <span className="text-[#fce4a6]">Love It</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">The activation that makes every event truly one-of-a-kind</p>
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Why Corporate Clients <span className="text-[#fce4a6]">Choose Us</span></h2>
+                <p className="text-white/50 text-xs md:text-sm">The activation that drives engagement, brand reach, and real results</p>
               </Reveal>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                {whyGuestsLove.map((item, i) => (
+                {whyClientsLove.map((item, i) => (
                   <Reveal key={i} delay={i * 0.06} className="bg-white/[0.04] border border-white/10 rounded-xl p-4 md:p-5 hover:border-[#fce4a6]/30 transition-colors group">
                     <div className="text-[#fce4a6] mb-2 md:mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
                     <h3 className="font-bold text-sm md:text-base mb-1">{item.title}</h3>
@@ -437,24 +427,43 @@ export default function AiBoothPage() {
             </div>
           </section>
 
-          <SubtleCTA label="Check Availability" onQuote={openQuote} />
+          {/* ── Gallery: robotbell + robottd ── */}
+          <section className="px-4 py-6 md:py-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
+                <Reveal>
+                  <div className="rounded-2xl overflow-hidden border border-white/10">
+                    <img src="/images/robotbell.jpg" alt="Robot Photobooth at Bell event" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                  </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <div className="rounded-2xl overflow-hidden border border-white/10">
+                    <img src="/images/robottd.jpg" alt="Robot Photobooth at TD Coliseum" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+          </section>
+
+          {/* ── CTA 2 ── */}
+          <SubtleCTA label="Get a Corporate Quote" onQuote={openQuote} />
 
           {/* ── Customize Your Experience ── */}
           <section className="py-8 md:py-10 px-4 border-t border-white/5">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-6">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Customize Your <span className="text-[#fce4a6]">Experience</span></h2>
-                <p className="text-white/50 text-xs md:text-sm">Every detail tailored to your event, brand, or theme</p>
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Built Around <span className="text-[#fce4a6]">Your Brand</span></h2>
+                <p className="text-white/50 text-xs md:text-sm">Every detail of the activation can be tailored to your company</p>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {customizations.map((item, i) => (
+                {customizationItems.map((item, i) => (
                   <Reveal key={i} delay={i * 0.1}>
                     <div className="bg-gradient-to-br from-[#fce4a6]/10 to-transparent border border-[#fce4a6]/20 rounded-2xl p-5 md:p-6 h-full hover:border-[#fce4a6]/40 transition-colors group">
                       <div className="w-12 h-12 rounded-xl bg-[#fce4a6]/10 border border-[#fce4a6]/30 flex items-center justify-center mb-4 text-[#fce4a6] group-hover:bg-[#fce4a6]/20 transition-colors">
                         {item.icon}
                       </div>
-                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{item.title}</h3>
-                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{item.desc}</p>
+                      <h3 className="font-bold text-base md:text-lg text-white mb-2">{L(item.title)}</h3>
+                      <p className="text-white/60 text-xs md:text-sm leading-relaxed">{L(item.desc)}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -462,6 +471,25 @@ export default function AiBoothPage() {
             </div>
           </section>
 
+          {/* ── Gallery pair 3 ── */}
+          <section className="px-4 py-6 md:py-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <Reveal>
+                  <div className="rounded-2xl overflow-hidden border border-white/10">
+                    <img src="/images/robot1.jpg" alt="Corporate Robot Photobooth" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                  </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <div className="rounded-2xl overflow-hidden border border-white/10">
+                    <img src="/images/robothalloween.JPG" alt="Robot Photobooth corporate theme" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+          </section>
+
+          {/* ── CTA 3 ── */}
           <SubtleCTA label="Book Now" onQuote={openQuote} />
 
           {/* ── Testimonials ── */}
@@ -470,11 +498,11 @@ export default function AiBoothPage() {
               <Reveal className="text-center mb-5">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">What Clients <span className="text-[#fce4a6]">Are Saying</span></h2>
                 <div className="flex items-center justify-center gap-2 mt-2">
-                  <a href="https://g.co/kgs/v9p1CzT" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#fce4a6] hover:text-white transition-colors text-xs md:text-sm">
+                  <div className="flex items-center gap-2 text-[#fce4a6] text-xs md:text-sm">
                     <svg className="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                     <span className="text-yellow-400">★★★★★</span>
                     <span className="text-white/50 text-[10px] md:text-xs">5.0 on Google</span>
-                  </a>
+                  </div>
                 </div>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -495,7 +523,32 @@ export default function AiBoothPage() {
             </div>
           </section>
 
-          <SubtleCTA label="Reserve Your Date" onQuote={openQuote} />
+          {/* ── Testimonial Videos ── */}
+          <section className="px-4 py-6 md:py-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <Reveal>
+                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
+                      <source src="/videos/tdtestimonial.mov" type="video/quicktime" />
+                      <source src="/videos/tdtestimonial.mov" type="video/mp4" />
+                    </video>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
+                      <source src="/videos/robottest1.MOV" type="video/quicktime" />
+                      <source src="/videos/robottest1.MOV" type="video/mp4" />
+                    </video>
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+          </section>
+
+          {/* ── CTA 4 ── */}
+          <SubtleCTA label="Check Availability" onQuote={openQuote} />
 
           {/* ── FAQs ── */}
           <section className="py-8 md:py-10 px-4">
@@ -509,13 +562,13 @@ export default function AiBoothPage() {
                     <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                       className="w-full text-left bg-white/[0.04] border border-white/10 rounded-xl p-3.5 md:p-4 hover:border-[#fce4a6]/30 transition-colors">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{faq.question}</h3>
+                        <h3 className="font-bold text-xs md:text-base text-white/90 pr-4">{L(faq.question)}</h3>
                         {expandedFaq === i ? <FiChevronUp className="text-[#fce4a6] w-4 h-4 flex-shrink-0" /> : <FiChevronDown className="text-[#fce4a6] w-4 h-4 flex-shrink-0" />}
                       </div>
                       <AnimatePresence>
                         {expandedFaq === i && (
                           <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-white/60 text-xs md:text-sm mt-2 leading-relaxed">
-                            {faq.answer}
+                            {L(faq.answer)}
                           </motion.p>
                         )}
                       </AnimatePresence>
@@ -530,18 +583,18 @@ export default function AiBoothPage() {
           <section className="py-10 md:py-14 px-4 border-t border-white/5">
             <Reveal className="max-w-3xl mx-auto text-center">
               <h2 className="text-xl md:text-2xl lg:text-4xl font-black mb-2 md:mb-3">
-                Give Your Guests a Photo Experience They&apos;ve <span className="text-[#fce4a6]">Never Seen Before.</span>
+                Your Next Corporate Event Should Be <span className="text-[#fce4a6]">Unforgettable.</span>
               </h2>
               <p className="text-white/60 text-xs md:text-sm lg:text-base mb-5 max-w-lg mx-auto">
-                The AI Booth is unlike anything else in {finalCtaArea}. Dates are limited — reserve yours now before your date is gone.
+                Join Chicago&apos;s top brands that trust Robo Booth to elevate their corporate events. Automated, branded, and fully managed — we handle everything.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openQuote}
                   className="w-full sm:w-auto bg-[#fce4a6] text-black px-7 py-3.5 md:px-8 md:py-4 rounded-full font-bold text-sm md:text-base shadow-lg shadow-[#fce4a6]/20 hover:shadow-xl transition-all group">
-                  Reserve Your Date Now <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
+                  Check Availability & Get a Quote <FiArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
-                <a href={contactHref} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
-                  <FiPhone className="w-4 h-4" /> {contactLabel}
+                <a href={market.phoneTel} className="flex items-center gap-2 text-[#fce4a6] text-sm font-semibold hover:text-white transition-colors">
+                  <FiPhone className="w-4 h-4" /> Contact Us
                 </a>
               </div>
               <p className="text-white/30 text-[10px] md:text-xs mt-2">Responses in &lt;15 mins&ensp;|&ensp;No credit card required</p>
@@ -562,23 +615,23 @@ export default function AiBoothPage() {
               {packageType === 'bronze' && (
                 <div className="bg-white/90 border border-black/10 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">🥉 Bronze Package Selected</span>
-                  <span className="text-black/60 text-[10px]">AI Booth via Premium Photobooth</span>
+                  <span className="text-black/60 text-[10px]">Corporate Robot Photobooth Only</span>
                 </div>
               )}
               {packageType === 'gold' && (
                 <div className="bg-[#fce4a6] rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">⭐ Gold Package Selected</span>
-                  <span className="text-black/60 text-[10px]">AI Booth + Robot Photobooth</span>
+                  <span className="text-black/60 text-[10px]">{isTexas ? 'Corporate Robot + 360 Booth' : 'Corporate Robot + Event Photography'}</span>
                 </div>
               )}
               {packageType === 'platinum' && (
                 <div className="bg-gradient-to-r from-white/95 to-gray-100 border border-gray-300 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
                   <span className="text-black text-xs font-black">💎 Platinum Package Selected</span>
-                  <span className="text-black/60 text-[10px]">AI Booth + Robot + Event Photography</span>
+                  <span className="text-black/60 text-[10px]">{isTexas ? 'Second Robot + 360 Booth' : 'Robot + Event Photography + Second Booth'}</span>
                 </div>
               )}
-              <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">{packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Reserve the AI Booth'}</h2>
-              <p className="text-black/60 text-xs md:text-sm mb-4 text-center">Tell us your date and we&apos;ll confirm availability within 15 minutes.</p>
+              <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">{packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Get a Corporate Quote'}</h2>
+              <p className="text-black/60 text-xs md:text-sm mb-4 text-center">Tell us your event date and we&apos;ll confirm availability within 15 minutes.</p>
               {success ? (
                 <div className="text-green-600 text-center font-bold py-6">Thank you! We&apos;ll be in touch soon.</div>
               ) : (
@@ -594,13 +647,13 @@ export default function AiBoothPage() {
                   <select name="budget" value={form.budget} onChange={handleInput} required
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#fce4a6] focus:border-transparent outline-none text-black">
                     <option value="">Estimated Budget *</option>
-                    <option value="$500-$1000">$500–$1,000</option>
-                    <option value="$1000-$1500">$1,000–$1,500</option>
-                    <option value="$1500+">$1,500+</option>
+                    <option value="$1500-$2500">$1,500–$2,500</option>
+                    <option value="$2500-$4000">$2,500–$4,000</option>
+                    <option value="$4000+">$4,000+</option>
                   </select>
                   <button type="submit" disabled={submitting}
                     className="w-full bg-[#fce4a6] text-black py-3.5 rounded-xl font-bold text-sm hover:bg-[#e8d08e] transition-colors">
-                    {submitting ? 'Sending…' : 'Reserve My Date →'}
+                    {submitting ? 'Sending…' : 'Get My Quote →'}
                   </button>
                   <p className="text-center text-black/30 text-[10px]">No spam. We respond within 15 minutes during business hours.</p>
                 </form>
@@ -617,18 +670,18 @@ export default function AiBoothPage() {
             <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-md border-t border-[#fce4a6]/30 px-3 py-3 safe-area-pb">
               <div className="flex gap-2">
-                <a href={contactHref} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
-                  <FiPhone className="w-4 h-4" /> {showRegionalContact ? 'Call' : 'Contact'}
+                <a href={market.phoneTel} className="flex-1 flex items-center justify-center gap-2 bg-white/10 border border-[#fce4a6]/30 text-[#fce4a6] py-3 rounded-full font-bold text-sm">
+                  <FiPhone className="w-4 h-4" /> Call Now
                 </a>
                 <button onClick={openQuote} className="flex-[2] flex items-center justify-center gap-2 bg-[#fce4a6] text-black py-3 rounded-full font-bold text-sm shadow-lg shadow-[#fce4a6]/20">
-                  Reserve Your Date <FiArrowRight className="w-4 h-4" />
+                  Get a Quote <FiArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
             <motion.button initial={{ opacity: 0, y: 40, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 40, scale: 0.9 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={openQuote}
               className="hidden md:flex fixed bottom-6 right-6 z-40 bg-[#fce4a6] text-black font-bold px-6 py-3.5 rounded-full shadow-xl shadow-black/40 hover:bg-white transition-colors text-sm items-center gap-2">
-              Reserve Your Date <FiArrowRight className="w-4 h-4" />
+              Get a Corporate Quote <FiArrowRight className="w-4 h-4" />
             </motion.button>
           </>
         )}
@@ -638,50 +691,47 @@ export default function AiBoothPage() {
 }
 
 /* ─── DATA ─── */
-const aiStyles = [
-  { image: '/images/aibooth1.png', label: 'Classic Hollywood / Gala', desc: 'Cinematic red carpet glamour — perfect for galas, award nights, and upscale events.' },
-  { image: '/images/aibooth2.png', label: 'Animated / Cartoon', desc: 'Fun and vibrant — perfect for brand activations, holiday parties, and corporate events.' },
-  { image: '/images/aibooth3.png', label: 'Spy / Secret Agent', desc: 'Dark, cinematic noir — an instant hit at themed parties, galas, and casino nights.' },
-  { image: '/images/aibooth4.png', label: 'Sports Star', desc: 'Team-branded sports heroes — perfect for corporate team events, playoffs parties, and fan activations.' },
-  { image: '/images/aibooth5.png', label: 'Stage Performer', desc: 'Concert spotlight energy — ideal for music events, galas, and entertainment-themed activations.' },
-  { image: '/images/aibooth6.png', label: 'Space Explorer', desc: 'Out-of-this-world fun — great for tech events, product launches, and futuristic themed parties.' },
-]
-
 const howItWorks = [
-  { title: 'Step Inside the Booth', desc: 'Guests enter our Premium Photobooth or get snapped by the roaming Robot Photobooth. A perfectly lit, high-quality photo is taken in seconds.' },
-  { title: 'AI Works Its Magic', desc: 'The photo is instantly processed and transformed into the chosen AI style — cinematic Hollywood, animated cartoon, editorial fashion, and more.' },
-  { title: 'Receive Your Masterpiece', desc: 'The AI-transformed image is delivered straight to the guest\'s phone in seconds. Ready to post, share, and keep forever.' },
+  { title: 'You Book', desc: 'Tell us your event date, venue, and brand requirements. We confirm availability fast and build a custom activation plan around your company.' },
+  { title: 'We Show Up', desc: 'Our team arrives early, sets up the fully branded robot (no power or WiFi needed), and handles every detail on-site. Zero work for your team.' },
+  { title: 'Your Brand Goes Everywhere', desc: 'The robot roams your event, captures branded photos, and delivers them instantly to every guest\'s phone. Your logo on every single shot.' },
 ]
 
-const whyGuestsLove = [
-  { icon: <FiAward className="w-5 h-5 md:w-6 md:h-6" />, title: 'Truly One-of-a-Kind Photos', desc: 'No other activation creates photos like this. Every AI-transformed image is unique — a personalized masterpiece that guests genuinely want to keep.' },
-  { icon: <FiSend className="w-5 h-5 md:w-6 md:h-6" />, title: 'Instant Phone Delivery', desc: 'Photos are on guests\' phones within seconds of the transformation completing — no waiting, no apps, just instant wow.' },
-  { icon: <FiShare2 className="w-5 h-5 md:w-6 md:h-6" />, title: 'Social Media Gold', desc: 'Every AI-transformed photo is designed to stop the scroll. Guests share immediately — your event organically reaches hundreds of new eyes.' },
-  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Works With Any Theme', desc: 'Classic Hollywood, animated characters, editorial fashion — we match the AI style to your exact event theme so everything feels intentional.' },
-  { icon: <FiStar className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Branded', desc: 'Custom overlays, logos, event names, and hashtags on every transformation — every share becomes organic marketing for your event.' },
-  { icon: <FiUsers className="w-5 h-5 md:w-6 md:h-6" />, title: 'White-Glove Service', desc: 'Our team handles everything — booth setup, AI processing, delivery, and teardown. You enjoy the event while we make it unforgettable.' },
+const whyClientsLove = [
+  { icon: <FiShare2 className="w-5 h-5 md:w-6 md:h-6" />, title: 'Instant Brand Reach', desc: 'Every photo is branded with your logo and shared instantly to guests\' phones. Your company reaches hundreds of personal networks in real-time.' },
+  { icon: <FiUsers className="w-5 h-5 md:w-6 md:h-6" />, title: 'Hands-On Guest Engagement', desc: 'Our on-site attendant drives the robot throughout your venue, approaching guests and creating memorable interactions — fully guided, never left unattended.' },
+  { icon: <FiStar className="w-5 h-5 md:w-6 md:h-6" />, title: 'Custom Voice Personalization', desc: 'The robot can speak in your voice or a team member\'s voice — greeting guests and announcing each photo in a custom recorded message that makes every shot feel personal.' },
+  { icon: <FiZap className="w-5 h-5 md:w-6 md:h-6" />, title: 'Zero Setup Burden', desc: 'No power outlets, no WiFi, no special venue requirements. Our team handles full setup and teardown — invisible to your operations.' },
+  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'LinkedIn-Ready Content', desc: 'Professional branded photos your team will actually want to post. Every activation generates real social content for your company.' },
+  { icon: <FiShield className="w-5 h-5 md:w-6 md:h-6" />, title: 'White-Glove Service', desc: 'A dedicated on-site attendant manages everything. Your team focuses on the event — we handle the tech from start to finish.' },
+  { icon: <FiImage className="w-5 h-5 md:w-6 md:h-6" />, title: 'Fully Branded Experience', desc: 'Custom overlays, themed robot appearance, and branded digital delivery. Every touchpoint reflects your company\'s identity.' },
 ]
 
-const customizations = [
-  { icon: <FiCamera className="w-5 h-5" />, title: 'Custom AI Style Theme', desc: 'We design a bespoke AI style for your event — Classic Hollywood, animated, editorial magazine, fantasy, retro, and more. Matched to your exact theme.' },
-  { icon: <FiImage className="w-5 h-5" />, title: 'Branded Overlays & Event Details', desc: 'Your logo, event name, date, and hashtag on every transformed photo. Every guest becomes a walking billboard the moment they share.' },
-  { icon: <FiShield className="w-5 h-5" />, title: 'Full White-Glove Service', desc: 'Delivery, setup, professional operation, and teardown all handled by our team. Focus on your guests — we handle the entire experience.' },
+const chicagoCustomizations = [
+  { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays, Branding & Theme', desc: 'Every photo is branded with your logo, event name, date, and company colors. The robot can also be dressed to match your event theme — from formal galas to branded product launches — making every touchpoint a professional extension of your brand.' },
+  { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with custom voice lines — even in your voice or a team member\'s voice — that greet guests and announce each photo. Engaging, professional, and fully on-brand for every interaction.' },
+]
+
+const texasCustomizations = [
+  { icon: <FiImage className="w-5 h-5" />, title: 'Logo Overlays', desc: 'Every photo is branded with your logo, event name, date, and company colors — a consistent, professional branded experience on every single shot.' },
+  { icon: <FiStar className="w-5 h-5" />, title: 'Branding & Theme', desc: 'The robot can be dressed to match your event theme — from formal galas to branded product launches. We also create custom vinyl decals of your logo, printed and applied directly to the robot for a fully on-brand physical presence at your activation.' },
+  { icon: <FiZap className="w-5 h-5" />, title: 'Custom Voice & Messaging', desc: 'Program the robot with custom voice lines — even in your voice or a team member\'s voice — that greet guests and announce each photo. Engaging, professional, and fully on-brand for every interaction.' },
 ]
 
 const testimonials = [
-  { name: 'Priya M.', role: 'Corporate Event Manager', text: 'Our guests completely lost it when they saw their AI photos. The Classic Hollywood transformation was jaw-dropping. Easiest event decision I\'ve ever made.' },
-  { name: 'Jason & Kelly', role: 'Wedding Reception', text: 'We had the animated style for our wedding and every single person left with the biggest smile. It\'s the most unique thing we\'ve ever seen at a wedding.' },
-  { name: 'Derek T.', role: 'Brand Activation Director', text: 'The social media reach we got from guests sharing their AI photos was unreal. Hundreds of impressions from a single event. We\'re booking again for every activation.' },
+  { name: 'Rosanna', role: 'Project Manager, TD USA Trust', text: 'I want to extend a huge THANK YOU to you and your team. The photo booths were very popular among TechCon attendees. You and your team were accommodating, patient and friendly from the beginning to the end of the event. The backdrop and pictures were great quality. We especially appreciated your attention to helping us brainstorm ideas for the TechCon sticker.' },
+  { name: 'Priya S.', role: 'Corporate Events Manager', text: 'We\'ve done a lot of activations — this was by far the most talked-about. Guests loved it, the setup was seamless, and the branded content was exactly on-point. Will book again.' },
+  { name: 'Marcus L.', role: 'Head of People & Culture', text: 'Our company gala needed something different. The robot was a massive hit — every table got engagement, the photos were stunning, and our team shared them everywhere. 10/10 recommend.' },
 ]
 
 const faqs = [
-  { question: 'What exactly is the AI Booth?', answer: 'The AI Booth captures a high-quality photo using our Premium Photobooth or Robot Photobooth, then instantly transforms it into a styled AI image — cinematic Hollywood, animated cartoon, editorial fashion, spy noir, and more. Guests receive their masterpiece on their phone within seconds.' },
-  { question: 'How long does the AI transformation take?', answer: 'The full process — from photo capture to transformed image on the guest\'s phone — typically takes under a minute. Most guests have their AI photo before they walk away from the booth.' },
-  { question: 'Can we choose the AI style for our event?', answer: 'Absolutely. We work with you before the event to select or design a custom AI style that matches your theme — Classic Hollywood, animated, sports star, space explorer, or a fully bespoke look built for your brand.' },
-  { question: 'How do guests receive their photos?', answer: 'Transformed photos are delivered instantly to guests\' phones via QR code, AirDrop, SMS, or email — no app download required. They can share to social media immediately.' },
-  { question: 'Do you need WiFi at the venue?', answer: 'We bring our own mobile connectivity for AI processing and delivery. Venue WiFi is helpful but not required — we\'ll confirm technical needs when you book.' },
-  { question: 'What events is the AI Booth best for?', answer: 'Weddings, corporate events, brand activations, galas, holiday parties, product launches, and any event where you want a truly unique photo experience that guests will talk about and share.' },
-  { question: 'How far in advance should I book?', answer: 'We recommend booking at least 3–6 months in advance for peak weekends. Popular dates fill quickly — submit your date and we\'ll confirm availability within 15 minutes.' },
+  { question: 'How big is the Robot Photobooth?', answer: 'The robot stands at 5ft 4in tall — roughly the same height and footprint as a person. It doesn\'t require any dedicated space or booth setup, so it fits seamlessly into any venue without disrupting your event layout.' },
+  { question: 'Is this suitable for large corporate events?', answer: 'Absolutely. The robot is designed for events of all sizes — from intimate team gatherings to large conferences and galas with hundreds of guests. We scale our activation to match your event perfectly.' },
+  { question: 'Can the photos be fully branded with our company logo?', answer: 'Yes. Every photo comes with a custom overlay featuring your logo, event name, date, and brand colors. A consistent, professional branded experience on every single shot.' },
+  { question: 'Does the setup require WiFi or power from the venue?', answer: 'No. The robot runs on battery and uses its own connectivity. No cables, no venue WiFi, no special requirements. We handle everything independently.' },
+  { question: 'How are photos shared with guests?', answer: 'Instantly via QR code, AirDrop, SMS, or email — all right at the event. Guests receive their branded photo within seconds of it being taken.' },
+  { question: 'Is an attendant included?', answer: 'Yes. Every corporate booking includes a dedicated on-site attendant who manages the robot, guides guests, and ensures a flawless experience from arrival to teardown.' },
+  { question: 'How far in advance should we book?', answer: 'We recommend booking at least 4–6 weeks in advance for corporate events. Peak conference season fills up quickly. Contact us now to check availability for your date.' },
 ]
 
 const companyLogos = [
