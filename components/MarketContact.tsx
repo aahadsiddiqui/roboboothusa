@@ -7,6 +7,7 @@ import { useMetaPixel } from '../hooks/useMetaPixel'
 import { useUTM } from '../hooks/useUTM'
 import type { MarketConfig } from '../data/markets'
 import { trackTexasMetaLead } from '../lib/trackTexasMetaLead'
+import { trackChicagoFormSubmit } from '../lib/trackChicagoFormSubmit'
 
 const budgetsByProduct: Record<string, { value: string; label: string }[]> = {
   'Robot Photobooth': [
@@ -193,7 +194,8 @@ export default function MarketContact({ market }: Props) {
                       })
                       if (response.ok) {
                         setShowToast(true)
-                        trackTexasMetaLead(market.id)
+                        if (market.id === 'chicago') trackChicagoFormSubmit()
+                        else trackTexasMetaLead(market.id)
                         form.reset()
                         setTimeout(() => setShowToast(false), 3000)
                       } else {
