@@ -51,7 +51,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
   )
   const L = useCallback((s: string) => localizeMarketingCopy(s, market), [market])
   const [showModal, setShowModal] = useState(false)
-  const [packageType, setPackageType] = useState<'bronze' | 'gold' | 'platinum' | ''>('')
+  const [packageType, setPackageType] = useState<'bronze' | 'gold' | ''>('')
   const [form, setForm] = useState({ firstName: '', email: '', phone: '', eventDate: '', budget: '' })
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -78,7 +78,6 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
   const openQuote = useCallback(() => { setPackageType(''); setShowModal(true) }, [])
   const openBronzePackage = useCallback(() => { setPackageType('bronze'); setShowModal(true) }, [])
   const openGoldPackage = useCallback(() => { setPackageType('gold'); setShowModal(true) }, [])
-  const openPlatinumPackage = useCallback(() => { setPackageType('platinum'); setShowModal(true) }, [])
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -90,7 +89,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
       const fd = new FormData()
       fd.append('first-name', form.firstName); fd.append('phone-number', form.phone); fd.append('email', form.email)
       fd.append('event-date', form.eventDate); fd.append('budget', form.budget); fd.append('event-type', 'Wedding')
-      fd.append('package', packageType === 'gold' ? 'Gold Package (Robot Photobooth + Second Booth)' : packageType === 'platinum' ? 'Platinum Package (Robot + Photography + Second Booth)' : packageType === 'bronze' ? 'Bronze Package (Robot Photobooth Only)' : 'General Inquiry')
+      fd.append('package', packageType === 'gold' ? 'Gold Package (Robot Photobooth + Second Booth)' : packageType === 'bronze' ? 'Bronze Package (Robot Photobooth Only)' : 'General Inquiry')
       fd.append('_replyto', form.email)
       fd.append('source', market.id === 'national' ? 'Wedding Funnel' : `Wedding Funnel (${market.analyticsRegion})`)
       fd.append('intake-market', market.id)
@@ -286,7 +285,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                 <h2 className="text-2xl md:text-3xl lg:text-4xl font-black mb-2">Choose Your <span className="text-[#fce4a6]">Package</span></h2>
                 <p className="text-white/50 text-sm md:text-base">Every wedding is unique — pick the package that fits your vision.</p>
               </Reveal>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 items-stretch">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 items-stretch max-w-3xl mx-auto">
 
                 {/* Bronze */}
                 <Reveal>
@@ -337,7 +336,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Robot Photobooth visiting every table at your reception',
-                          'Add-on: Premium Photobooth or 360 Booth',
+                          'Add-on: Premium Photobooth',
                           'Two photo experiences running throughout your reception',
                           'Custom couple overlay designed around your wedding aesthetic',
                           'Physical prints with your names & wedding date',
@@ -354,44 +353,6 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                         <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openGoldPackage}
                           className="bg-[#fce4a6] text-black px-4 py-3 rounded-full font-black text-xs md:text-sm shadow-lg shadow-[#fce4a6]/30 hover:shadow-xl transition-all group w-full">
                           Book Gold Package <FiArrowRight className="inline ml-1 group-hover:translate-x-1 transition-transform" />
-                        </motion.button>
-                        <p className="text-white/30 text-[10px] mt-2">Responses in &lt;15 mins · No credit card required</p>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-
-                {/* Platinum */}
-                <Reveal delay={0.2}>
-                  <div className="relative rounded-3xl overflow-hidden border-2 border-white/40 bg-gradient-to-br from-white/[0.08] via-black to-black p-6 md:p-7 h-full flex flex-col" style={{ boxShadow: '0 0 40px rgba(255,255,255,0.06)' }}>
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.07)_0%,_transparent_60%)] pointer-events-none" />
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className="flex justify-center mb-4">
-                        <span className="inline-flex items-center gap-2 bg-gradient-to-r from-white/20 to-white/10 text-white text-[11px] font-black tracking-widest uppercase px-4 py-1.5 rounded-full border border-white/30">
-                          💎 Platinum Package
-                        </span>
-                      </div>
-                      <h3 className="text-lg md:text-xl font-black text-center mb-2">Robot + Photography + <span className="text-white/80">Second Booth</span></h3>
-                      <p className="text-white/60 text-xs text-center mb-6">The ultimate wedding reception experience — multiple photo stations your guests will be talking about for years.</p>
-                      <div className="space-y-2.5 mb-8 flex-1">
-                        {[
-                          'Everything in the Gold Package',
-                          'Add-on: Premium Photobooth or 360 Booth',
-                          'Multiple photo experiences for every guest all night',
-                          'Physical prints at every station — keepsakes guests love',
-                          'One team coordinating everything seamlessly',
-                          'The most unforgettable wedding reception in your circle',
-                        ].map((b, i) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <FiCheck className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
-                            <p className="text-white/70 text-xs leading-relaxed">{b}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="text-center">
-                        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={openPlatinumPackage}
-                          className="bg-white text-black px-4 py-3 rounded-full font-black text-xs md:text-sm hover:bg-white/90 transition-all group w-full shadow-lg shadow-white/10">
-                          Book Platinum Package <FiArrowRight className="inline ml-1 group-hover:translate-x-1 transition-transform" />
                         </motion.button>
                         <p className="text-white/30 text-[10px] mt-2">Responses in &lt;15 mins · No credit card required</p>
                       </div>
@@ -626,14 +587,8 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                   <span className="text-black/60 text-[10px]">Robot Photobooth + Second Booth</span>
                 </div>
               )}
-              {packageType === 'platinum' && (
-                <div className="bg-gradient-to-r from-white/95 to-gray-100 border border-gray-300 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-center gap-2 flex-wrap">
-                  <span className="text-black text-xs font-black">💎 Platinum Package Selected</span>
-                  <span className="text-black/60 text-[10px]">Robot + Photography + Second Booth</span>
-                </div>
-              )}
               <h2 className="text-lg md:text-2xl font-black text-black mb-1 text-center">
-                {packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : packageType === 'platinum' ? 'Book Platinum Package' : 'Get a Wedding Quote'}
+                {packageType === 'gold' ? 'Book Gold Package' : packageType === 'bronze' ? 'Book Bronze Package' : 'Get a Wedding Quote'}
               </h2>
 
               <p className="text-black/60 text-xs md:text-sm mb-4 text-center">Tell us your wedding date and we&apos;ll confirm availability within 15 minutes.</p>
@@ -714,7 +669,7 @@ const whyCouplesLove = [
 const customizations = [
   { icon: <FiImage className="w-5 h-5" />, title: 'Couple\'s Name & Date Overlay', desc: 'Your names, wedding date, and a custom design that reflects your aesthetic — romantic florals, gold foil, modern minimalist. Every photo is a beautifully branded keepsake from your day.' },
   { icon: <FiHeart className="w-5 h-5" />, title: 'Custom Voice Message from the Couple', desc: 'Record a personal voice message from the bride, groom, or both. The robot delivers it at every photo — a heartfelt, unique touch that makes every guest interaction feel personal and special.' },
-  { icon: <FiStar className="w-5 h-5" />, title: 'Multi-Booth Reception Experience', desc: 'Add a Premium Photobooth or 360 Booth alongside the robot — giving your guests multiple keepsake experiences throughout the reception that they\'ll be talking about for decades.' },
+  { icon: <FiStar className="w-5 h-5" />, title: 'Multi-Booth Reception Experience', desc: 'Add a Premium Photobooth alongside the robot — giving your guests multiple keepsake experiences throughout the reception that they\'ll be talking about for decades.' },
 ]
 
 const testimonials = [
