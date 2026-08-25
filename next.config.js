@@ -49,6 +49,8 @@ const nextConfig = {
         // Chicago-only ad funnels (no Texas equivalent).
         { source: '/chicago/corporate-events', destination: '/corporate-events' },
         { source: '/chicago/wedding-events', destination: '/wedding-events' },
+        { source: '/chicago/birthday-events', destination: '/birthday-events' },
+        { source: '/chicago/trade-show-events', destination: '/trade-show-events' },
       ],
     }
   },
