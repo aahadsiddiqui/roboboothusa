@@ -117,7 +117,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://roboboothusa.com${publicPath}`} />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="preload" href="/images/robotbell.jpg" as="image" />
+        <link rel="preload" href="/images/wedding/hero-poster.png" as="image" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -186,9 +186,9 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                 {/* Desktop hero video */}
                 <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:block">
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
-                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
-                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
-                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/wedding/hero-poster.png" style={{ display: 'block' }}>
+                      <source src="/videos/robotwedding1.MOV" type="video/quicktime" />
+                      <source src="/videos/robotwedding1.MOV" type="video/mp4" />
                     </video>
                   </div>
                 </motion.div>
@@ -196,9 +196,9 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                 {/* Mobile hero video */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden -mx-4">
                   <div className="overflow-hidden bg-black">
-                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
-                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
-                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/wedding/hero-poster.png" style={{ display: 'block' }}>
+                      <source src="/videos/robotwedding1.MOV" type="video/quicktime" />
+                      <source src="/videos/robotwedding1.MOV" type="video/mp4" />
                     </video>
                   </div>
                 </motion.div>
@@ -270,9 +270,9 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
 
               <Reveal delay={0.2} className="mt-8">
                 <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10 bg-black">
-                  <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robottd.jpg" style={{ display: 'block' }}>
-                    <source src="/videos/bmorobot.MOV" type="video/quicktime" />
-                    <source src="/videos/bmorobot.MOV" type="video/mp4" />
+                  <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" poster="/images/wedding/how-it-works-poster.png" style={{ display: 'block' }}>
+                    <source src="/videos/robotwedding2.MOV" type="video/quicktime" />
+                    <source src="/videos/robotwedding2.MOV" type="video/mp4" />
                   </video>
                 </div>
               </Reveal>
@@ -416,12 +416,12 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <Reveal>
                   <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robotbell.jpg" alt="Robot Photobooth at wedding reception" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                    <img src="/images/wedding/wedding-1.png" alt="Aman &amp; Aarushi&rsquo;s wedding reception" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
                   </div>
                 </Reveal>
                 <Reveal delay={0.1}>
                   <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robottd.jpg" alt="Wedding photobooth keepsake" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                    <img src="/images/wedding1.jpg" alt="Wedding photobooth keepsake" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
                   </div>
                 </Reveal>
               </div>
@@ -453,12 +453,12 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 <Reveal>
                   <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robot1.jpg" alt="Wedding robot photobooth activation" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                    <img src="/images/wedding2.jpg" alt="Wedding robot photobooth activation" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
                   </div>
                 </Reveal>
                 <Reveal delay={0.1}>
                   <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robothalloween.JPG" alt="Wedding photobooth experience" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
+                    <img src="/images/robot1.jpg" alt="Wedding photobooth experience" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
                   </div>
                 </Reveal>
               </div>
