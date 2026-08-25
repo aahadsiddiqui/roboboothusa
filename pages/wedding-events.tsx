@@ -336,7 +336,7 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                       <div className="space-y-2.5 mb-8 flex-1">
                         {[
                           'Robot Photobooth visiting every table at your reception',
-                          'Add-on: Premium Photobooth',
+                          'Add-on: 360 Booth',
                           'Two photo experiences running throughout your reception',
                           'Custom couple overlay designed around your wedding aesthetic',
                           'Physical prints with your names & wedding date',
@@ -669,7 +669,7 @@ const whyCouplesLove = [
 const customizations = [
   { icon: <FiImage className="w-5 h-5" />, title: 'Couple\'s Name & Date Overlay', desc: 'Your names, wedding date, and a custom design that reflects your aesthetic — romantic florals, gold foil, modern minimalist. Every photo is a beautifully branded keepsake from your day.' },
   { icon: <FiHeart className="w-5 h-5" />, title: 'Custom Voice Message from the Couple', desc: 'Record a personal voice message from the bride, groom, or both. The robot delivers it at every photo — a heartfelt, unique touch that makes every guest interaction feel personal and special.' },
-  { icon: <FiStar className="w-5 h-5" />, title: 'Multi-Booth Reception Experience', desc: 'Add a Premium Photobooth alongside the robot — giving your guests multiple keepsake experiences throughout the reception that they\'ll be talking about for decades.' },
+  { icon: <FiStar className="w-5 h-5" />, title: 'Multi-Booth Reception Experience', desc: 'Add a 360 Booth alongside the robot — giving your guests multiple keepsake experiences throughout the reception that they\'ll be talking about for decades.' },
 ]
 
 const testimonials = [
