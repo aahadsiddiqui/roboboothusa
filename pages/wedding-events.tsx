@@ -16,6 +16,7 @@ import {
   weddingHeroRatingLine,
   weddingMarqueeLine,
 } from '../lib/marketBranding'
+import BirthdayGalleryCarousel from '../components/BirthdayGalleryCarousel'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -367,25 +368,16 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
           {/* ── CTA 1 ── */}
           <SubtleCTA label="Check Your Date" onQuote={openQuote} />
 
-          {/* ── Gallery pair 1 ── */}
+          {/* ── Wedding Gallery slider ── */}
           <section className="px-4 py-6 md:py-8">
             <div className="max-w-5xl mx-auto">
               <Reveal className="text-center mb-5">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Wedding <span className="text-[#fce4a6]">Gallery</span></h2>
                 <p className="text-white/50 text-xs md:text-sm">Real couples. Real receptions. Real memories.</p>
               </Reveal>
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/wedding/wedding-1.png" alt="Aman &amp; Aarushi&rsquo;s wedding reception" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/wedding1.jpg" alt="Wedding photobooth keepsake" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-              </div>
+              <Reveal delay={0.1}>
+                <BirthdayGalleryCarousel images={weddingGalleryImages} />
+              </Reveal>
             </div>
           </section>
 
@@ -404,24 +396,6 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
                     <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{L(item.desc)}</p>
                   </Reveal>
                 ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ── Gallery pair 2 ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/wedding2.jpg" alt="Wedding robot photobooth activation" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robot1.jpg" alt="Wedding photobooth experience" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
               </div>
             </div>
           </section>
@@ -627,6 +601,15 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
 }
 
 /* ─── DATA ─── */
+const weddingGalleryImages = [
+  { id: 1, src: '/images/wedding/gallery/david-chinwendu.png', title: "David & Chinwendu's Wedding 2026" },
+  { id: 2, src: '/images/wedding/gallery/ga-guests.png', title: 'Wedding guests celebrating' },
+  { id: 3, src: '/images/wedding/gallery/hanzala-aiman.png', title: 'Hanzala & Aiman Wedding Celebration' },
+  { id: 4, src: '/images/wedding/gallery/aathavan-kishani.png', title: 'Aathavan & Kishani — July 11th 2026' },
+  { id: 5, src: '/images/wedding/gallery/tam-joey.png', title: 'Tam & Joey Nadelny' },
+  { id: 6, src: '/images/wedding/gallery/gianpaolo-milly.png', title: 'Gianpaolo & Milly — April 2026' },
+]
+
 const howItWorks = [
   { title: 'Tell Us Your Vision', desc: 'Share your wedding date, venue, colour palette, and theme. We design a fully custom overlay and robot styling that feels like it was made for your love story — because it was.' },
   { title: 'We Arrive & Set Up', desc: 'Our team arrives before your first guest. The robot is set up, branded, and ready — no venue power or WiFi needed. You focus on getting ready; we handle every detail.' },
