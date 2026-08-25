@@ -486,30 +486,6 @@ export default function WeddingEvents({ browserPath }: InferGetServerSidePropsTy
             </div>
           </section>
 
-          {/* ── Testimonial Videos ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
-                      <source src="/videos/tdtestimonial.mov" type="video/quicktime" />
-                      <source src="/videos/tdtestimonial.mov" type="video/mp4" />
-                    </video>
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
-                      <source src="/videos/robottest1.MOV" type="video/quicktime" />
-                      <source src="/videos/robottest1.MOV" type="video/mp4" />
-                    </video>
-                  </div>
-                </Reveal>
-              </div>
-            </div>
-          </section>
-
           {/* ── CTA 4 ── */}
           <SubtleCTA label="Check Your Date" onQuote={openQuote} />
 
