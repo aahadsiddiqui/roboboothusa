@@ -113,7 +113,7 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://roboboothusa.com${publicPath}`} />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="preload" href="/images/robotbell.jpg" as="image" />
+        <link rel="preload" href="/images/birthday/birthday-1.png" as="image" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -180,9 +180,9 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                 {/* Desktop hero video */}
                 <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:block">
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
-                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
-                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
-                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/birthday-1.png" style={{ display: 'block' }}>
+                      <source src="/videos/birthday-video.mov" type="video/quicktime" />
+                      <source src="/videos/birthday-video.mov" type="video/mp4" />
                     </video>
                   </div>
                 </motion.div>
@@ -190,9 +190,9 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                 {/* Mobile hero video */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden -mx-4">
                   <div className="overflow-hidden bg-black">
-                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robot1.jpg" style={{ display: 'block' }}>
-                      <source src="/videos/equifaxrobot.mov" type="video/quicktime" />
-                      <source src="/videos/equifaxrobot.mov" type="video/mp4" />
+                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/birthday-1.png" style={{ display: 'block' }}>
+                      <source src="/videos/birthday-video.mov" type="video/quicktime" />
+                      <source src="/videos/birthday-video.mov" type="video/mp4" />
                     </video>
                   </div>
                 </motion.div>
