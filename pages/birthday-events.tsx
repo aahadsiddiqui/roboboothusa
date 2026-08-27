@@ -11,6 +11,7 @@ import { trackChicagoFormSubmit } from '../lib/trackChicagoFormSubmit'
 import { getMarketForPath } from '../data/markets'
 import { getRegionalLandingSsp } from '../lib/regionalLandingSsp'
 import { firstRobotBrandPhrase, localizeMarketingCopy } from '../lib/marketBranding'
+import BirthdayGalleryCarousel from '../components/BirthdayGalleryCarousel'
 
 /* ─── Reveal ─── */
 const Reveal = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
@@ -113,7 +114,7 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://roboboothusa.com${publicPath}`} />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="preload" href="/images/birthday/birthday-1.png" as="image" />
+        <link rel="preload" href="/images/birthday/hero-poster.png" as="image" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
@@ -180,7 +181,7 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                 {/* Desktop hero video */}
                 <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden md:block">
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black">
-                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/birthday-1.png" style={{ display: 'block' }}>
+                    <video className="w-full h-[480px] lg:h-[520px] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/hero-poster.png" style={{ display: 'block' }}>
                       <source src="/videos/birthday-video.mov" type="video/quicktime" />
                       <source src="/videos/birthday-video.mov" type="video/mp4" />
                     </video>
@@ -190,7 +191,7 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                 {/* Mobile hero video */}
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="md:hidden -mx-4">
                   <div className="overflow-hidden bg-black">
-                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/birthday-1.png" style={{ display: 'block' }}>
+                    <video className="w-full max-h-[50vh] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/hero-poster.png" style={{ display: 'block' }}>
                       <source src="/videos/birthday-video.mov" type="video/quicktime" />
                       <source src="/videos/birthday-video.mov" type="video/mp4" />
                     </video>
@@ -262,9 +263,9 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
 
               <Reveal delay={0.2} className="mt-8">
                 <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden border border-white/10 bg-black">
-                  <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" poster="/images/robottd.jpg" style={{ display: 'block' }}>
-                    <source src="/videos/bmorobot.MOV" type="video/quicktime" />
-                    <source src="/videos/bmorobot.MOV" type="video/mp4" />
+                  <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" poster="/images/birthday/how-it-works-poster.png" style={{ display: 'block' }}>
+                    <source src="/videos/robotbirthday2.MOV" type="video/quicktime" />
+                    <source src="/videos/robotbirthday2.MOV" type="video/mp4" />
                   </video>
                 </div>
               </Reveal>
@@ -397,25 +398,16 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
           {/* ── CTA 1 ── */}
           <SubtleCTA label="Check Availability" onQuote={openQuote} />
 
-          {/* ── Gallery pair 1 ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <Reveal className="text-center mb-5">
+          {/* ── Birthday Gallery slider ── */}
+          <section className="py-8 md:py-12 px-4 border-t border-white/5">
+            <div className="max-w-6xl mx-auto">
+              <Reveal className="text-center mb-6 md:mb-8">
                 <h2 className="text-xl md:text-2xl lg:text-3xl font-black mb-1.5">Celebration <span className="text-[#fce4a6]">Gallery</span></h2>
                 <p className="text-white/50 text-xs md:text-sm">Real celebrations. Real guests. Real memories.</p>
               </Reveal>
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robotbell.jpg" alt="Robot Photobooth at a birthday party" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robottd.jpg" alt="Birthday photobooth keepsake print" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-              </div>
+              <Reveal delay={0.1}>
+                <BirthdayGalleryCarousel />
+              </Reveal>
             </div>
           </section>
 
@@ -434,24 +426,6 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                     <p className="text-white/50 text-[11px] md:text-xs leading-relaxed">{L(item.desc)}</p>
                   </Reveal>
                 ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ── Gallery pair 2 ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robot1.jpg" alt="Birthday robot photobooth activation" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10">
-                    <img src="/images/robothalloween.JPG" alt="Themed birthday photobooth experience" className="w-full h-56 sm:h-64 md:h-80 lg:h-96 object-cover" loading="lazy" />
-                  </div>
-                </Reveal>
               </div>
             </div>
           </section>
@@ -512,30 +486,6 @@ export default function BirthdayEvents({ browserPath }: InferGetServerSidePropsT
                     </div>
                   </Reveal>
                 ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ── Testimonial Videos ── */}
-          <section className="px-4 py-6 md:py-8">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-                <Reveal>
-                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
-                      <source src="/videos/tdtestimonial.mov" type="video/quicktime" />
-                      <source src="/videos/tdtestimonial.mov" type="video/mp4" />
-                    </video>
-                  </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-                    <video className="w-full max-h-[60vh] object-contain" controls loop playsInline preload="metadata" style={{ display: 'block' }}>
-                      <source src="/videos/robottest1.MOV" type="video/quicktime" />
-                      <source src="/videos/robottest1.MOV" type="video/mp4" />
-                    </video>
-                  </div>
-                </Reveal>
               </div>
             </div>
           </section>
