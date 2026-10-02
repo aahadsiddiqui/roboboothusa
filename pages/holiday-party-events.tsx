@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import type { InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiX,
+  FiArrowRight, FiCheck, FiPhone, FiChevronDown, FiChevronUp, FiChevronLeft, FiChevronRight, FiX,
 } from 'react-icons/fi'
 import { appendUtmParams } from '../lib/utmParams'
 import { trackChicagoFormSubmit } from '../lib/trackChicagoFormSubmit'
@@ -152,6 +152,76 @@ function TwinkleLights({ count = 24, className = '' }: { count?: number; classNa
           }}
         />
       ))}
+    </div>
+  )
+}
+
+
+function HolidayPrintSlideshow() {
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const [atStart, setAtStart] = useState(true)
+  const [atEnd, setAtEnd] = useState(false)
+
+  const updateEdges = useCallback(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    setAtStart(el.scrollLeft <= 4)
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4)
+  }, [])
+
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) return
+    updateEdges()
+    el.addEventListener('scroll', updateEdges, { passive: true })
+    window.addEventListener('resize', updateEdges)
+    return () => {
+      el.removeEventListener('scroll', updateEdges)
+      window.removeEventListener('resize', updateEdges)
+    }
+  }, [updateEdges])
+
+  const scrollByCard = (dir: 1 | -1) => {
+    const el = scrollerRef.current
+    const slide = el?.querySelector<HTMLElement>('[data-slide]')
+    if (!el || !slide) return
+    const gap = parseFloat(window.getComputedStyle(el).columnGap || '0') || 12
+    el.scrollBy({ left: dir * (slide.offsetWidth + gap), behavior: 'smooth' })
+  }
+
+  const arrowClass = 'pointer-events-auto absolute top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white border border-white/20 shadow-lg hover:bg-black disabled:opacity-30 disabled:pointer-events-none'
+
+  return (
+    <div className="relative">
+      <div
+        ref={scrollerRef}
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {prints.map((shot) => (
+          <figure key={shot.src} data-slide className="snap-start shrink-0 w-[82%] sm:w-[68%] lg:w-[56%]">
+            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+              <img src={shot.src} alt={shot.title} width={1024} height={682} className="w-full aspect-[3/2] object-cover" />
+            </div>
+            <figcaption className="text-white/70 text-sm mt-2">{shot.title}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className="pointer-events-none absolute left-0 top-0 w-[82%] sm:w-[68%] lg:w-[56%] aspect-[3/2]">
+        <button type="button" aria-label="Previous print" onClick={() => scrollByCard(-1)} disabled={atStart} className={`${arrowClass} left-2`}>
+          <FiChevronLeft className="w-5 h-5" />
+        </button>
+        <button type="button" aria-label="Next print" onClick={() => scrollByCard(1)} disabled={atEnd} className={`${arrowClass} -right-5`}>
+          <FiChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function PortraitStill({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="flex justify-center">
+      <img src={src} alt={alt} width={576} height={1024} className="w-auto max-w-[min(100%,420px)] h-auto rounded-2xl border border-white/10" />
     </div>
   )
 }
@@ -403,16 +473,7 @@ export default function HolidayPartyEvents({ browserPath }: InferGetServerSidePr
                   <h2 className="text-2xl md:text-4xl font-black mb-2">Real Prints From Real Holiday Parties</h2>
                   <p className="text-white/50 text-sm">Every one of these was taken by our robot and printed on the spot, with each company&apos;s own logo and theme.</p>
                 </Reveal>
-                <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2">
-                  {prints.map((shot) => (
-                    <figure key={shot.src} className="snap-start shrink-0 w-[240px] md:w-[280px]">
-                      <div className="rounded-2xl overflow-hidden border border-white/10 bg-black">
-                        <img src={shot.src} alt={shot.title} className="w-full h-[320px] md:h-[360px] object-cover" loading="lazy" />
-                      </div>
-                      <figcaption className="text-white/60 text-xs mt-2">{shot.title}</figcaption>
-                    </figure>
-                  ))}
-                </div>
+                <HolidayPrintSlideshow />
               </div>
             </section>
 
@@ -456,9 +517,7 @@ export default function HolidayPartyEvents({ browserPath }: InferGetServerSidePr
                   </ul>
                   <QuoteButton onClick={() => openQuote('signature')}>Book Year-End Signature</QuoteButton>
                 </Reveal>
-                <div className="rounded-2xl overflow-hidden border border-white/10">
-                  <img src="/images/holiday/two-robots-light-tunnel.jpg" alt="Two Robot Photobooths in an illuminated corporate event tunnel" className="w-full h-[320px] lg:h-[420px] object-cover" loading="lazy" />
-                </div>
+                <PortraitStill src="/images/holiday/two-robots-light-tunnel.jpg" alt="Two Robot Photobooths in an illuminated corporate event tunnel" />
               </div>
             </section>
 
@@ -477,7 +536,7 @@ export default function HolidayPartyEvents({ browserPath }: InferGetServerSidePr
                     </Reveal>
                   ))}
                 </div>
-                <img src="/images/holiday/robot-holiday-gala-arch.jpg" alt="Robot Photobooth under a holiday balloon arch at a corporate gala" className="w-full max-h-[420px] object-cover rounded-2xl border border-white/10" loading="lazy" />
+                <PortraitStill src="/images/holiday/robot-holiday-gala-arch.jpg" alt="Robot Photobooth under a holiday balloon arch at a corporate gala" />
                 <div className="flex justify-center mt-8">
                   <QuoteButton onClick={() => openQuote()}>Book My Holiday Party</QuoteButton>
                 </div>
