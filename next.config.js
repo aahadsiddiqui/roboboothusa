@@ -51,6 +51,7 @@ const nextConfig = {
         { source: '/chicago/wedding-events', destination: '/wedding-events' },
         { source: '/chicago/birthday-events', destination: '/birthday-events' },
         { source: '/chicago/trade-show-events', destination: '/trade-show-events' },
+        { source: '/chicago/holiday-party-events', destination: '/holiday-party-events' },
       ],
     }
   },
