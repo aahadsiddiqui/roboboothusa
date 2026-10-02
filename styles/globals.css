@@ -140,6 +140,37 @@
 } 
 
 /* Safe area padding for iPhones with home indicator */
+
+@keyframes snowfall {
+  0% { transform: translate3d(0, -10vh, 0); }
+  100% { transform: translate3d(var(--snow-drift, 20px), 110vh, 0); }
+}
+
+.snowflake {
+  position: absolute;
+  top: 0;
+  border-radius: 9999px;
+  background: #fff;
+  animation-name: snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.animate-twinkle {
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snowflake { display: none; }
+  .animate-twinkle { animation: none; }
+}
+
 .safe-area-pb {
   padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
